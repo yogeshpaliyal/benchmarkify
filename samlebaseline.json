@@ -1,0 +1,78 @@
+{
+    "context": {
+        "build": {
+            "brand": "Jio",
+            "device": "TEST123",
+            "fingerprint": "TEST123",
+            "model": "LS1542QWN",
+            "version": {
+                "sdk": 30
+            }
+        },
+        "cpuCoreCount": 4,
+        "cpuLocked": false,
+        "cpuMaxFreqHz": 1305600000,
+        "memTotalBytes": 1972162560,
+        "sustainedPerformanceModeEnabled": false
+    },
+    "benchmarks": [
+        {
+            "name": "startupCompilationBaselineProfiles",
+            "params": {},
+            "className": "com.example.benchmark.StartupBenchmarks",
+            "totalRunTimeNs": 155690886242,
+            "metrics": {
+                "timeToInitialDisplayMs": {
+                    "minimum": 1096.115833,
+                    "maximum": 1414.014947,
+                    "median": 1161.0081765,
+                    "runs": [
+                        1414.014947,
+                        1133.693229,
+                        1170.526197,
+                        1281.624479,
+                        1101.296875,
+                        1128.309427,
+                        1151.490156,
+                        1172.742812,
+                        1346.225885,
+                        1096.115833
+                    ]
+                }
+            },
+            "sampledMetrics": {},
+            "warmupIterations": 0,
+            "repeatIterations": 10,
+            "thermalThrottleSleepSeconds": 0
+        },
+        {
+            "name": "startupCompilationNone",
+            "params": {},
+            "className": "com.example.benchmark.StartupBenchmarks",
+            "totalRunTimeNs": 129921305159,
+            "metrics": {
+                "timeToInitialDisplayMs": {
+                    "minimum": 1489.099687,
+                    "maximum": 2170.634582,
+                    "median": 1685.6467699999998,
+                    "runs": [
+                        2170.634582,
+                        1556.952812,
+                        1489.099687,
+                        1917.608541,
+                        1519.933229,
+                        1568.782031,
+                        1513.596249,
+                        1877.662291,
+                        1847.907603,
+                        1802.511509
+                    ]
+                }
+            },
+            "sampledMetrics": {},
+            "warmupIterations": 0,
+            "repeatIterations": 10,
+            "thermalThrottleSleepSeconds": 0
+        }
+    ]
+}

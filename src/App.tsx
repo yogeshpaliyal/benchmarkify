@@ -1,34 +1,35 @@
+
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import { CompareChart } from './CompareChart'
+import { Textarea } from "@/components/ui/textarea"
+import { Benchmark } from './types/benchmark'
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [benchmarks, setBenchmarks] = useState<Benchmark[] | undefined>([])
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+  
+      <div className='flex flex-row flex-1 w-dvw p-8'>
+        <div className='flex-1' style={{flex: 1}}>
+          <Textarea onChange={(e) => {
+            
+            try {
+              const value = JSON.parse(e.currentTarget.value)
+              setBenchmarks(value.benchmarks)
+            } catch (e) {
+              console.error(e)
+            }
+          }} />
+        </div>
+        <div className='flex flex-1' style={{flex: 2}}>
+          <div>
+            <CompareChart  benchmarks={benchmarks} />
+          </div>
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+  
   )
 }
 
