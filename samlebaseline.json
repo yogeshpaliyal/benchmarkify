@@ -73,6 +73,35 @@
             "warmupIterations": 0,
             "repeatIterations": 10,
             "thermalThrottleSleepSeconds": 0
+        },
+        {
+            "name": "startupCompilationNone2",
+            "params": {},
+            "className": "com.example.benchmark.StartupBenchmarks",
+            "totalRunTimeNs": 129921305159,
+            "metrics": {
+                "timeToInitialDisplayMs": {
+                    "minimum": 1489.099687,
+                    "maximum": 2170.634582,
+                    "median": 1685.6467699999998,
+                    "runs": [
+                        2170.634582,
+                        1556.952812,
+                        1489.099687,
+                        1917.608541,
+                        1519.933229,
+                        1568.782031,
+                        1513.596249,
+                        1877.662291,
+                        1847.907603,
+                        1802.511509
+                    ]
+                }
+            },
+            "sampledMetrics": {},
+            "warmupIterations": 0,
+            "repeatIterations": 10,
+            "thermalThrottleSleepSeconds": 0
         }
     ]
 }

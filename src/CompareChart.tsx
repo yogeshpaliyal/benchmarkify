@@ -1,7 +1,15 @@
-"use client"
+"use client";
 
-import { TrendingUp } from "lucide-react"
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import { TrendingUp } from "lucide-react";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Line,
+  LineChart,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 import {
   Card,
@@ -10,18 +18,16 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
-import { Benchmark } from "./types/benchmark"
-const chartData = [
-  { name: "startupCompilationBaselineProfiles", minimum: 1096.115833, maximum: 1414.014947, median: 1161.0081765 },
-  { name: "startupCompilationNone", minimum: 1489.099687, maximum: 2170.634582, median: 1685.6467699999998 },
-]
+} from "@/components/ui/chart";
+import { Benchmark } from "./types/benchmark";
 
 const chartConfig = {
   minimum: {
@@ -36,36 +42,72 @@ const chartConfig = {
     label: "maximum",
     color: "hsl(var(--chart-3))",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
-export function CompareChart({ benchmarks }: { benchmarks: Benchmark[] | undefined }) {
+export function CompareChart({
+  benchmarks,
+}: {
+  benchmarks: Benchmark[] | undefined;
+}) {
+  const chartData =
+    benchmarks?.map((benchmark) => ({
+      name: benchmark.name,
+      minimum: benchmark.metrics.timeToInitialDisplayMs.minimum,
+      median: benchmark.metrics.timeToInitialDisplayMs.median,
+      maximum: benchmark.metrics.timeToInitialDisplayMs.maximum,
+    })) || [];
+
   return (
-    <Card className="flex-1">
+    <Card>
       <CardHeader>
-        <CardTitle>Compare benchmark</CardTitle>
+        <CardTitle>Time to Initial Display</CardTitle>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
-          <BarChart accessibilityLayer data={chartData}>
-            <CartesianGrid vertical={false} />
+          <LineChart
+            accessibilityLayer
+            data={chartData}
+            margin={{
+              left: 12,
+              right: 12,
+            }}
+          >
+            <CartesianGrid vertical={true} />
             <XAxis
               dataKey="name"
               tickLine={false}
               tickMargin={10}
               axisLine={false}
-              tickFormatter={(value) => value.slice(0, 3)}
+            />
+            <YAxis
+              scale={"auto"}
+              dataKey="maximum"
+              allowDataOverflow={false}
+              axisLine={true}
             />
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent indicator="dashed" />}
             />
-            <Bar dataKey="minimum" fill="var(--color-minimum)" radius={4} />
-            <Bar dataKey="maximum" fill="var(--color-maximum)" radius={4} />
-            <Bar dataKey="median" fill="var(--color-median)" radius={4} />
-
-          </BarChart>
+            <Line
+              dataKey="minimum"
+              stroke="var(--color-minimum)"
+              strokeWidth={2}
+            />
+            <Line
+              dataKey="median"
+              stroke="var(--color-median)"
+              strokeWidth={2}
+            />
+            <Line
+              dataKey="maximum"
+              stroke="var(--color-maximum)"
+              strokeWidth={2}
+            />
+            <ChartLegend content={<ChartLegendContent />} />
+          </LineChart>
         </ChartContainer>
       </CardContent>
     </Card>
-  )
+  );
 }
