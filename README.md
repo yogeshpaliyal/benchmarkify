@@ -2,8 +2,7 @@
 
 # Benchmark Charts
 
-![buildStatus](https://img.shields.io/github/workflow/status/yogeshpaliyal/Benchmark Charts/Java%20CI%20with%20Gradle?style=plastic)
-![latestVersion](https://img.shields.io/github/v/release/yogeshpaliyal/Benchmark Charts)
+![buildStatus](https://img.shields.io/github/workflow/status/yogeshpaliyal/BenchMarkify/Java%20CI%20with%20Gradle?style=plastic)  
 <a href="https://twitter.com/yogeshpaliyal" target="_blank">
 <img alt="Twitter: yogeshpaliyal" src="https://img.shields.io/twitter/follow/yogeshpaliyal.svg?style=social" />
 </a>
@@ -59,9 +58,6 @@ Give a ⭐️ if this project helped you!
     <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" alt="Donation" width="160">
 </a>
 
-## ☑️ TODO
-
-- [ ] Task 1
 
 ## 📝 License
 
