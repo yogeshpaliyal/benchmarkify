@@ -1,4 +1,8 @@
 # BenchMarkify 📈
+
+![image](https://github.com/user-attachments/assets/a52412a8-5a9a-4294-85f5-8d96bfa1fd9f)
+
+
 Benchmarkify is a web app that helps you visualize and analyze Android benchmark results stored in JSON format.
 Features
  * Upload JSON benchmark results from your Android app.
