@@ -3,7 +3,8 @@
 # BenchMarkify 📈
 <a href="https://twitter.com/yogeshpaliyal" target="_blank">
 <img alt="Twitter: yogeshpaliyal" src="https://img.shields.io/twitter/follow/yogeshpaliyal.svg?style=social" />
-</a>
+</a>  
+
 > Benchmarkify is a web app that helps you visualize and analyze Android macrobenchmark results stored in JSON format.
 
 ### ✨ Demo
