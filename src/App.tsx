@@ -44,6 +44,7 @@ function App() {
       setFilteredBenchmarks(value.benchmarks);
       setBenchmarks(value.benchmarks);
     } catch (e) {
+      setBenchmarks([]);
       console.error(e);
     }
   }, [rawInput]);
@@ -134,7 +135,7 @@ function App() {
               >
                 Save
               </Button>
-              <Button variant={"ghost"}>Clear</Button>
+              <Button variant={"ghost"} onClick={() => setRawInput("")}>Clear</Button>
             </div>
           </div>
           <Textarea
