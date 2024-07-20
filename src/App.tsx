@@ -9,17 +9,44 @@ import sampleBenchmarks from "../samplebaseline.json";
 import { FiltersSelector } from "./ui/Filters";
 import { Filters } from "./types/filters";
 import githubLogo from "./assets/github-mark.svg";
+import { Button } from "./components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 function App() {
   const [benchmarks, setBenchmarks] = useState<Benchmark[] | undefined>([]);
+  const [rawInput, setRawInput] = useState<string | undefined>(JSON.stringify(sampleBenchmarks, null, 2));
+
+  const [localBenchmarks, setLocalBenchmarks] = useState<Record<string, string | undefined> | undefined>();
+
+  useEffect(() => {
+    const localBenchMarksStr = localStorage.getItem("benchmarks");
+    if (localBenchMarksStr) {
+      try {
+        setLocalBenchmarks(JSON.parse(localBenchMarksStr));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  });
+  
 
   useEffect(() => {
     try {
-      setBenchmarks(sampleBenchmarks.benchmarks);
+      const value = JSON.parse(rawInput ?? "");
+      setFilteredBenchmarks(value.benchmarks);
+      setBenchmarks(value.benchmarks);
     } catch (e) {
       console.error(e);
     }
-  }, []);
+  }, [rawInput]);
 
   const defaultFilter = useMemo(() => {
     return {
@@ -50,30 +77,72 @@ function App() {
     <div className="flex flex-col h-dvh w-dvw">
       <div className="flex flex-row w-full justify-between p-4">
         <h1 className="text-4xl font-bold text-center ">BenchMarkify 📈</h1>
-        <a className="content-center" href="https://github.com/yogeshpaliyal/BenchMarkify" target="_blank">
-        <img
-          src={githubLogo}
-          height={32}
-          width={32}
-          className="Github Logo"
-          alt="logo"
-        />
+        <a
+          className="content-center"
+          href="https://github.com/yogeshpaliyal/BenchMarkify"
+          target="_blank"
+        >
+          <img
+            src={githubLogo}
+            height={32}
+            width={32}
+            className="Github Logo"
+            alt="logo"
+          />
         </a>
       </div>
       <div className="md:flex flex-row flex-1 w-full">
-        <div className="flex-1 p-4" style={{ flex: 1 }}>
+        <div className="flex flex-1 flex-col p-4" style={{ flex: 1 }}>
+          <div className="w-full flex flex-row space-x-4 pb-4">
+            <Select onValueChange={(selectedItem) => setRawInput(localBenchmarks?.[selectedItem])}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select Saved Benchmark" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Benchmarks</SelectLabel>
+                  {localBenchmarks && Object.keys(localBenchmarks)?.map((localBenchmark) => {
+                    return (
+                      <SelectItem value={localBenchmark}>
+                        {localBenchmark}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <div className="space-x-4">
+              <Button
+                variant={"ghost"}
+                onClick={() => {
+                  let value = window.prompt("Save Baseline profile", "");
+                  if (value) {
+                    const localBenchMarksStr =
+                      localStorage.getItem("benchmarks");
+                    let localBenchMarks: Record<string, string | undefined> = {};
+                    if (localBenchMarksStr) {
+                      localBenchMarks = JSON.parse(localBenchMarksStr);
+                    }
+                    localBenchMarks[value] = rawInput;
+                    localStorage.setItem(
+                      "benchmarks",
+                      JSON.stringify(localBenchMarks, null, 2)
+                    );
+                    setLocalBenchmarks(localBenchMarks);
+                  }
+                }}
+              >
+                Save
+              </Button>
+              <Button variant={"ghost"}>Clear</Button>
+            </div>
+          </div>
           <Textarea
-            className=" h-full"
-            defaultValue={JSON.stringify(sampleBenchmarks, null, 2)}
+            className="flex-1"
+            value={rawInput}
             placeholder="Paste Benchmark JSON here"
             onChange={(e) => {
-              try {
-                const value = JSON.parse(e.currentTarget.value);
-                setFilteredBenchmarks(value.benchmarks);
-                setBenchmarks(value.benchmarks);
-              } catch (e) {
-                console.error(e);
-              }
+              setRawInput(e.currentTarget.value);
             }}
           />
         </div>
