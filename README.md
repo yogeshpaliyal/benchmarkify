@@ -11,18 +11,20 @@
 
 ![demo](https://github.com/user-attachments/assets/a52412a8-5a9a-4294-85f5-8d96bfa1fd9f)
 
-## ⌨️ Usage
-
-1. Select the file from <benchmarkModule>/build/outputs/<baseline-result>.json
-2. Paste in BenchMarkify.
-3. Generate clear and informative charts and tables.
-
-
 ## 🧰 Features
 1. Select Select 1 or multiple benchmark results.
 2. Select any metric.
 3. Compare Benchmarks in Charts or tables.
 4. Store Benchmarks locally to use later.
+
+## ⌨️ Usage
+
+1. Select the file from `<benchmarkModule>/build/outputs/<baseline-result>.json`
+2. Paste in BenchMarkify.
+3. Generate clear and informative charts and tables.
+
+
+
 
 ## ✍️ Author
 
