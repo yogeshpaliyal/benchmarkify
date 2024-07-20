@@ -19,6 +19,13 @@
 2. Paste in BenchMarkify.
 3. Generate clear and informative charts and tables.
 
+
+## 🧰 Features
+1. Select Select 1 or multiple benchmark results.
+2. Select any metric.
+3. Compare Benchmarks in Charts or tables.
+4. Store Benchmarks locally to use later.
+
 ## ✍️ Author
 
 👤 **Yogesh Choudhary Paliyal**
