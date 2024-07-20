@@ -1,12 +1,9 @@
 ![](cover.jpeg)
 
-# Benchmark Charts
-
-![buildStatus](https://img.shields.io/github/workflow/status/yogeshpaliyal/BenchMarkify/Java%20CI%20with%20Gradle?style=plastic)  
+# BenchMarkify 📈
 <a href="https://twitter.com/yogeshpaliyal" target="_blank">
 <img alt="Twitter: yogeshpaliyal" src="https://img.shields.io/twitter/follow/yogeshpaliyal.svg?style=social" />
 </a>
-
 > Benchmarkify is a web app that helps you visualize and analyze Android macrobenchmark results stored in JSON format.
 
 ### ✨ Demo
