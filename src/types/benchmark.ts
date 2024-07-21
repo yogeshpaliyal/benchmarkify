@@ -18,14 +18,13 @@ export interface BenchmarkContext {
     benchmarks: Benchmark[];
 }
 
+
 export interface Benchmark {
     name: string;
     params: Record<string, unknown>;
     className: string;
     totalRunTimeNs: number;
-    metrics: {
-        timeToInitialDisplayMs: Metric;
-    };
+    metrics: Record<string, Metric>;
     sampledMetrics: Record<string, unknown>;
     warmupIterations: number;
     repeatIterations: number;

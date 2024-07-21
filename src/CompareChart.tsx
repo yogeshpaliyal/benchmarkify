@@ -28,6 +28,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { Benchmark } from "./types/benchmark";
+import { Filters } from "./types/filters";
 
 const chartConfig = {
   minimum: {
@@ -45,16 +46,17 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function CompareChart({
-  benchmarks,
+  benchmarks, filter
 }: {
   benchmarks: Benchmark[] | undefined;
+  filter: Filters;
 }) {
   const chartData =
     benchmarks?.map((benchmark) => ({
       name: benchmark.name,
-      minimum: benchmark.metrics.timeToInitialDisplayMs.minimum,
-      median: benchmark.metrics.timeToInitialDisplayMs.median,
-      maximum: benchmark.metrics.timeToInitialDisplayMs.maximum,
+      minimum: benchmark.metrics[filter.metrics]?.minimum,
+      median: benchmark.metrics[filter.metrics]?.median,
+      maximum: benchmark.metrics[filter.metrics]?.maximum,
     })) || [];
 
   return (

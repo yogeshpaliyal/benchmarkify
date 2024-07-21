@@ -51,7 +51,7 @@ function App() {
     }
   }, [rawInput]);
 
-  const defaultFilter = useMemo(() => {
+  const defaultFilter: Filters = useMemo(() => {
     return {
       benchmarkNames: benchmarks?.map((benchmark) => benchmark.name) ?? [],
       metrics: "timeToInitialDisplayMs",
@@ -163,7 +163,7 @@ function App() {
                 <TabsTrigger value="table">Table</TabsTrigger>
               </TabsList>
               <TabsContent value="charts">
-                <CompareChart benchmarks={filteredBenchmarks} />
+                <CompareChart filter={filter} benchmarks={filteredBenchmarks} />
               </TabsContent>
               <TabsContent value="table">
                 <BenchmarkTable benchmarks={filteredBenchmarks} />
