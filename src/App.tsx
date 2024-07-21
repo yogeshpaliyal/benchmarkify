@@ -148,7 +148,7 @@ function App() {
           />
         </div>
         <div
-          className="flex flex-1 h-full justify-around content-around p-8"
+          className="flex flex-1 justify-around content-around p-8"
           style={{ flex: 2 }}
         >
           <div className="w-full">
