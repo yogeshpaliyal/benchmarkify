@@ -19,6 +19,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ModeToggle } from "./ui/mode-toggle";
+import GithubIcon from "./assets/github-mark";
 
 function App() {
   const [benchmarks, setBenchmarks] = useState<Benchmark[] | undefined>([]);
@@ -78,19 +80,16 @@ function App() {
     <div className="flex flex-col h-dvh w-dvw">
       <div className="flex flex-row w-full justify-between p-4">
         <h1 className="text-4xl font-bold text-center ">BenchMarkify 📈</h1>
+        <div className="flex flex-row space-x-4">
+        <ModeToggle />
         <a
           className="content-center"
           href="https://github.com/yogeshpaliyal/BenchMarkify"
           target="_blank"
         >
-          <img
-            src={githubLogo}
-            height={32}
-            width={32}
-            className="Github Logo"
-            alt="logo"
-          />
+          <GithubIcon />
         </a>
+        </div>
       </div>
       <div className="md:flex flex-row flex-1 w-full">
         <div className="flex flex-1 flex-col p-4" style={{ flex: 1 }}>
