@@ -84,7 +84,7 @@ function App() {
         <ModeToggle />
         <a
           className="content-center"
-          href="https://github.com/yogeshpaliyal/BenchMarkify"
+          href="https://github.com/yogeshpaliyal/benchmarkify"
           target="_blank"
         >
           <GithubIcon />
@@ -172,7 +172,7 @@ function App() {
           </div>
         </div>
       </div>
-      <div className="text-center p-4 text-xs"> Created By Yogesh Paliyal </div>
+      <div className="text-center p-4 text-xs"> Created By <a href="https://github.com/yogeshpaliyal" target="_blank">Yogesh Paliyal</a> </div>
     </div>
   );
 }
