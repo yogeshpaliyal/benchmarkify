@@ -80,7 +80,7 @@ function App() {
     <div className="flex flex-col h-dvh w-dvw">
       <div className="flex flex-row w-full justify-between p-4">
         <h1 className="text-4xl font-bold text-center ">BenchMarkify 📈</h1>
-        <div className="flex flex-row space-x-4">
+        <div className="flex flex-wrap sm:space-y-4 md:space-y-0 md:space-x-4 mx-4 justify-end">
         <ModeToggle />
         <a
           className="content-center"
