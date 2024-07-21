@@ -77,8 +77,9 @@ export function CompareChart({
             <CartesianGrid vertical={true} />
             <XAxis
               dataKey="name"
-              tickLine={false}
-              tickMargin={10}
+              tickLine={true}
+              tickMargin={3}
+              minTickGap={0}
               axisLine={false}
             />
             <YAxis
