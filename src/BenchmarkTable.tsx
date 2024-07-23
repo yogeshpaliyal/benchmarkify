@@ -8,18 +8,21 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Benchmark } from "./types/benchmark";
+import { Filters } from "./types/filters";
 
 export function BenchmarkTable({
   benchmarks,
+  filters
 }: {
   benchmarks: Benchmark[] | undefined;
+  filters: Filters | undefined;
 }) {
 
     const tableData = benchmarks?.map((benchmark) => ({
         name: benchmark.name,
-        minimum: benchmark.metrics.timeToInitialDisplayMs.minimum,
-        median: benchmark.metrics.timeToInitialDisplayMs.median,
-        maximum: benchmark.metrics.timeToInitialDisplayMs.maximum,
+        minimum: filters ? benchmark.metrics[filters.metrics].minimum : 0,
+        median: filters ? benchmark.metrics[filters.metrics].median : 0,
+        maximum: filters ? benchmark.metrics[filters.metrics].maximum : 0,
       })) || []
     
 

@@ -51,27 +51,18 @@ function App() {
     }
   }, [rawInput]);
 
-  const defaultFilter: Filters = useMemo(() => {
-    return {
-      benchmarkNames: benchmarks?.map((benchmark) => benchmark.name) ?? [],
-      metrics: "timeToInitialDisplayMs",
-    };
-  }, [benchmarks]);
 
-  const [filter, setFilter] = useState<Filters>(defaultFilter);
+  const [filter, setFilter] = useState<Filters | undefined>();
 
   const [filteredBenchmarks, setFilteredBenchmarks] = useState<
     Benchmark[] | undefined
   >([]);
 
-  useEffect(() => {
-    setFilter(defaultFilter);
-  }, [benchmarks]);
 
   useEffect(() => {
     setFilteredBenchmarks(
       benchmarks?.filter((benchmark) =>
-        filter.benchmarkNames.includes(benchmark.name)
+        filter?.benchmarkNames.includes(benchmark.name)
       )
     );
   }, [filter]);
@@ -166,7 +157,7 @@ function App() {
                 <CompareChart filter={filter} benchmarks={filteredBenchmarks} />
               </TabsContent>
               <TabsContent value="table">
-                <BenchmarkTable benchmarks={filteredBenchmarks} />
+                <BenchmarkTable benchmarks={filteredBenchmarks} filters={filter}/>
               </TabsContent>
             </Tabs>
           </div>

@@ -18,17 +18,15 @@ import { Filters } from "@/types/filters";
 
 type Checked = DropdownMenuCheckboxItemProps["checked"];
 
-
 export function FiltersSelector({
   benchmarks,
   filters,
   setFilters,
 }: {
   benchmarks: Benchmark[] | undefined;
-  filters: Filters;
+  filters: Filters | undefined;
   setFilters: (filter: Filters) => void;
 }) {
-
   const metrics: string[] = React.useMemo(() => {
     const metrics = new Set<string>();
     benchmarks?.forEach((benchmark) => {
@@ -36,8 +34,15 @@ export function FiltersSelector({
         metrics.add(metric);
       });
     });
-    return Array.from(metrics)
-  }, [benchmarks])
+    return Array.from(metrics);
+  }, [benchmarks]);
+
+  React.useEffect(() => {
+    setFilters({
+      benchmarkNames: benchmarks?.map((benchmark) => benchmark.name) ?? [],
+      metrics: metrics?.[0] ?? "",
+    });
+  }, [benchmarks]);
 
   return (
     <div className="space-x-4 pb-4">
@@ -60,10 +65,13 @@ export function FiltersSelector({
                   if (checked) {
                     newBenchmarks.push(benchmark.name);
                   } else {
-                    newBenchmarks.splice(newBenchmarks.indexOf(benchmark.name), 1);
+                    newBenchmarks.splice(
+                      newBenchmarks.indexOf(benchmark.name),
+                      1
+                    );
                   }
                   setFilters({
-                    ...filters,
+                    ...(filters ?? { benchmarkNames: [], metrics: "" }),
                     benchmarkNames: newBenchmarks,
                   });
                 }}
@@ -81,18 +89,18 @@ export function FiltersSelector({
         <DropdownMenuContent className="w-56">
           <DropdownMenuLabel>Metrics</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuRadioGroup value={filters.metrics} onValueChange={(newValue) => {
-            setFilters({
-              ...filters,
-              metrics: newValue
-            })
-          }}>
+          <DropdownMenuRadioGroup
+            value={filters?.metrics}
+            onValueChange={(newValue) => {
+              setFilters({
+                ...(filters ?? { benchmarkNames: [], metrics: "" }),
+                metrics: newValue,
+              });
+            }}
+          >
             {metrics?.map((metric) => {
               return (
-                <DropdownMenuRadioItem
-                  key={metric}
-                  value={metric}
-                >
+                <DropdownMenuRadioItem key={metric} value={metric}>
                   {metric}
                 </DropdownMenuRadioItem>
               );

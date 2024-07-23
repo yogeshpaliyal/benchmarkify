@@ -49,20 +49,20 @@ export function CompareChart({
   benchmarks, filter
 }: {
   benchmarks: Benchmark[] | undefined;
-  filter: Filters;
+  filter: Filters | undefined;
 }) {
   const chartData =
     benchmarks?.map((benchmark) => ({
       name: benchmark.name,
-      minimum: benchmark.metrics[filter.metrics]?.minimum,
-      median: benchmark.metrics[filter.metrics]?.median,
-      maximum: benchmark.metrics[filter.metrics]?.maximum,
+      minimum: filter ? benchmark.metrics[filter.metrics]?.minimum : 0,
+      median: filter ? benchmark.metrics[filter.metrics]?.median : 0,
+      maximum: filter ? benchmark.metrics[filter.metrics]?.maximum : 0,
     })) || [];
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Time to Initial Display</CardTitle>
+        <CardTitle>{filter?.metrics}</CardTitle>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
