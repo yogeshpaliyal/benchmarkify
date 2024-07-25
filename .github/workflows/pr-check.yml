@@ -1,0 +1,30 @@
+name: PR Check
+
+on:
+  # Runs on pushes targeting the default branch
+  pull_request:
+    branches: ['main']
+
+
+# Sets the GITHUB_TOKEN permissions to allow deployment to GitHub Pages
+permissions:
+  contents: read
+
+# Allow one concurrent deployment
+concurrency:
+  group: 'pr-check'
+  cancel-in-progress: false
+
+jobs:
+  # Single deploy job since we're just deploying
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      - name: Build
+        run: npm run build
