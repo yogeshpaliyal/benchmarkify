@@ -21,12 +21,42 @@ import {
 } from "@/components/ui/select";
 import { ModeToggle } from "./ui/mode-toggle";
 import GithubIcon from "./assets/github-mark";
+import { useSearchParams } from "react-router-dom";
 
 function App() {
   const [benchmarks, setBenchmarks] = useState<Benchmark[] | undefined>([]);
-  const [rawInput, setRawInput] = useState<string | undefined>(JSON.stringify(sampleBenchmarks, null, 2));
+  const [rawInput, setRawInput] = useState<string | undefined>(
+    JSON.stringify(sampleBenchmarks, null, 2)
+  );
+  const [filter, setFilter] = useState<Filters | undefined>();
+  const [searchParams] = useSearchParams();
 
-  const [localBenchmarks, setLocalBenchmarks] = useState<Record<string, string | undefined> | undefined>();
+  const benchmarkId = searchParams.get("benchmarkId");
+  const filtersQueryP = searchParams.get("filters");
+
+  useEffect(() => {
+    if (benchmarkId) {
+      try {
+        setRawInput(benchmarkId);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, [benchmarkId]);
+
+  useEffect(() => {
+    if (filtersQueryP) {
+      try {
+        setFilter(JSON.parse(filtersQueryP));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, [filtersQueryP]);
+
+  const [localBenchmarks, setLocalBenchmarks] = useState<
+    Record<string, string | undefined> | undefined
+  >();
 
   useEffect(() => {
     const localBenchMarksStr = localStorage.getItem("benchmarks");
@@ -38,12 +68,10 @@ function App() {
       }
     }
   });
-  
 
   useEffect(() => {
     try {
       const value = JSON.parse(rawInput ?? "");
-      setFilteredBenchmarks(value.benchmarks);
       setBenchmarks(value.benchmarks);
     } catch (e) {
       setBenchmarks([]);
@@ -51,13 +79,9 @@ function App() {
     }
   }, [rawInput]);
 
-
-  const [filter, setFilter] = useState<Filters | undefined>();
-
   const [filteredBenchmarks, setFilteredBenchmarks] = useState<
     Benchmark[] | undefined
   >([]);
-
 
   useEffect(() => {
     setFilteredBenchmarks(
@@ -65,40 +89,45 @@ function App() {
         filter?.benchmarkNames.includes(benchmark.name)
       )
     );
-  }, [filter]);
+  }, [filter, benchmarks]);
 
   return (
     <div className="flex flex-col h-dvh w-dvw">
       <div className="flex flex-row w-full justify-between p-4">
         <h1 className="text-4xl font-bold text-center ">BenchMarkify 📈</h1>
         <div className="flex flex-wrap sm:space-y-4 md:space-y-0 md:space-x-4 mx-4 justify-end">
-        <ModeToggle />
-        <a
-          className="content-center"
-          href="https://github.com/yogeshpaliyal/benchmarkify"
-          target="_blank"
-        >
-          <GithubIcon />
-        </a>
+          <ModeToggle />
+          <a
+            className="content-center"
+            href="https://github.com/yogeshpaliyal/benchmarkify"
+            target="_blank"
+          >
+            <GithubIcon />
+          </a>
         </div>
       </div>
       <div className="md:flex flex-row flex-1 w-full">
         <div className="flex flex-1 flex-col p-4" style={{ flex: 1 }}>
           <div className="w-full flex flex-row space-x-4 pb-4">
-            <Select onValueChange={(selectedItem) => setRawInput(localBenchmarks?.[selectedItem])}>
+            <Select
+              onValueChange={(selectedItem) =>
+                setRawInput(localBenchmarks?.[selectedItem])
+              }
+            >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select Saved Benchmark" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Benchmarks</SelectLabel>
-                  {localBenchmarks && Object.keys(localBenchmarks)?.map((localBenchmark) => {
-                    return (
-                      <SelectItem value={localBenchmark}>
-                        {localBenchmark}
-                      </SelectItem>
-                    );
-                  })}
+                  {localBenchmarks &&
+                    Object.keys(localBenchmarks)?.map((localBenchmark) => {
+                      return (
+                        <SelectItem value={localBenchmark}>
+                          {localBenchmark}
+                        </SelectItem>
+                      );
+                    })}
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -110,7 +139,8 @@ function App() {
                   if (value) {
                     const localBenchMarksStr =
                       localStorage.getItem("benchmarks");
-                    let localBenchMarks: Record<string, string | undefined> = {};
+                    let localBenchMarks: Record<string, string | undefined> =
+                      {};
                     if (localBenchMarksStr) {
                       localBenchMarks = JSON.parse(localBenchMarksStr);
                     }
@@ -125,7 +155,9 @@ function App() {
               >
                 Save
               </Button>
-              <Button variant={"ghost"} onClick={() => setRawInput("")}>Clear</Button>
+              <Button variant={"ghost"} onClick={() => setRawInput("")}>
+                Clear
+              </Button>
             </div>
           </div>
           <Textarea
@@ -142,11 +174,27 @@ function App() {
           style={{ flex: 2 }}
         >
           <div className="w-full">
-            <FiltersSelector
-              benchmarks={benchmarks}
-              filters={filter}
-              setFilters={setFilter}
-            />
+            <div className="w-full flex flex-row justify-between">
+              <FiltersSelector
+                benchmarks={benchmarks}
+                filters={filter}
+                setFilters={setFilter}
+              />
+              <Button
+                onClick={() => {
+                  const url = new URL(window.location.href);
+                  url.searchParams.set("benchmarkId", rawInput ?? "");
+                  url.searchParams.set("filters", JSON.stringify(filter) ?? "");
+                  navigator.clipboard.writeText(url.toString()).then(() => {
+                    console.log("New URL", url.toString());
+                    alert("Link copied to clipboard");
+                  });
+                }}
+              >
+                {" "}
+                Share{" "}
+              </Button>
+            </div>
 
             <Tabs defaultValue="charts" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
@@ -157,13 +205,22 @@ function App() {
                 <CompareChart filter={filter} benchmarks={filteredBenchmarks} />
               </TabsContent>
               <TabsContent value="table">
-                <BenchmarkTable benchmarks={filteredBenchmarks} filters={filter}/>
+                <BenchmarkTable
+                  benchmarks={filteredBenchmarks}
+                  filters={filter}
+                />
               </TabsContent>
             </Tabs>
           </div>
         </div>
       </div>
-      <div className="text-center p-4 text-xs"> Created By <a href="https://github.com/yogeshpaliyal" target="_blank">Yogesh Paliyal</a> </div>
+      <div className="text-center p-4 text-xs">
+        {" "}
+        Created By{" "}
+        <a href="https://github.com/yogeshpaliyal" target="_blank">
+          Yogesh Paliyal
+        </a>{" "}
+      </div>
     </div>
   );
 }

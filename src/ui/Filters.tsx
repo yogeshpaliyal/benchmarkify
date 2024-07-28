@@ -38,6 +38,9 @@ export function FiltersSelector({
   }, [benchmarks]);
 
   React.useEffect(() => {
+    if (filters || !benchmarks?.length || !metrics?.length) {
+      return;
+    }
     setFilters({
       benchmarkNames: benchmarks?.map((benchmark) => benchmark.name) ?? [],
       metrics: metrics?.[0] ?? "",
