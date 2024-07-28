@@ -38,7 +38,7 @@ export function FiltersSelector({
   }, [benchmarks]);
 
   React.useEffect(() => {
-    if (filters) {
+    if (filters || !benchmarks?.length || !metrics?.length) {
       return;
     }
     setFilters({
