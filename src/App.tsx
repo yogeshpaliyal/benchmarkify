@@ -8,7 +8,6 @@ import { BenchmarkTable } from "./BenchmarkTable";
 import sampleBenchmarks from "../samplebaseline.json";
 import { FiltersSelector } from "./ui/Filters";
 import { Filters } from "./types/filters";
-import githubLogo from "./assets/github-mark.svg";
 import { Button } from "./components/ui/button";
 import {
   Select,
@@ -22,6 +21,7 @@ import {
 import { ModeToggle } from "./ui/mode-toggle";
 import GithubIcon from "./assets/github-mark";
 import { useSearchParams } from "react-router-dom";
+import { Compare } from "./ui/Compare";
 
 function App() {
   const [benchmarks, setBenchmarks] = useState<Benchmark[] | undefined>([]);
@@ -180,6 +180,9 @@ function App() {
                 filters={filter}
                 setFilters={setFilter}
               />
+
+              <div className="space-x-4">
+                <Compare benchmarks={benchmarks} />
               <Button
                 onClick={() => {
                   const url = new URL(window.location.href);
@@ -194,6 +197,7 @@ function App() {
                 {" "}
                 Share{" "}
               </Button>
+              </div>
             </div>
 
             <Tabs defaultValue="charts" className="w-full">
