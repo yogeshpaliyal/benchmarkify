@@ -21,10 +21,24 @@ import {
 } from "@/components/ui/select";
 import { ModeToggle } from "./ui/mode-toggle";
 import GithubIcon from "./assets/github-mark";
+import { useSearchParams } from "react-router-dom";
 
 function App() {
   const [benchmarks, setBenchmarks] = useState<Benchmark[] | undefined>([]);
   const [rawInput, setRawInput] = useState<string | undefined>(JSON.stringify(sampleBenchmarks, null, 2));
+  const [searchParams] = useSearchParams();
+
+  const benchmarkId = searchParams.get("benchmarkId");
+
+  useEffect(() => {
+    if (benchmarkId) {
+      try {
+        setRawInput(benchmarkId);
+      }catch(e) {
+        console.error(e);
+      }
+    }
+  }, [benchmarkId]);
 
   const [localBenchmarks, setLocalBenchmarks] = useState<Record<string, string | undefined> | undefined>();
 
@@ -142,11 +156,21 @@ function App() {
           style={{ flex: 2 }}
         >
           <div className="w-full">
+            <div className='w-full flex flex-row justify-between'>
             <FiltersSelector
               benchmarks={benchmarks}
               filters={filter}
               setFilters={setFilter}
             />
+            <Button onClick={() => {
+              const url = new URL(window.location.href);
+              url.searchParams.set("benchmarkId", rawInput ?? "");
+              navigator.clipboard.writeText(url.toString()).then(() => {
+                console.log("New URL", url.toString())
+                alert("Link copied to clipboard");
+              })
+            }}> Share </Button>
+            </div>
 
             <Tabs defaultValue="charts" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
