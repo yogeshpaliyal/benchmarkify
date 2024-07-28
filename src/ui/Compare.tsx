@@ -84,30 +84,34 @@ export function Compare({
           setSelectedBenchmark={setSelectedAfterBenchmarks}
         />
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline">
-              {selectedMetric ?? "Select Metric"}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56">
-            <DropdownMenuSeparator />
-            <DropdownMenuRadioGroup
-              value={selectedMetric}
-              onValueChange={(newValue) => {
-                setSelectedMetric(newValue);
-              }}
-            >
-              {metrics?.map((metric) => {
-                return (
-                  <DropdownMenuRadioItem key={metric} value={metric}>
-                    {metric}
-                  </DropdownMenuRadioItem>
-                );
-              })}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="w-full flex flex-col">
+          {!!selectedMetric ? <h6>Metric</h6> : ""}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">
+                {selectedMetric ?? "Select Metric"}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuSeparator />
+              <DropdownMenuRadioGroup
+                value={selectedMetric}
+                onValueChange={(newValue) => {
+                  setSelectedMetric(newValue);
+                }}
+              >
+                {metrics?.map((metric) => {
+                  return (
+                    <DropdownMenuRadioItem key={metric} value={metric}>
+                      {metric}
+                    </DropdownMenuRadioItem>
+                  );
+                })}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
         {selectedMetric &&
           selectedBaseBenchmarks &&
           selectedAfterBenchmarks && (
