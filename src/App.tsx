@@ -26,9 +26,11 @@ import { useSearchParams } from "react-router-dom";
 function App() {
   const [benchmarks, setBenchmarks] = useState<Benchmark[] | undefined>([]);
   const [rawInput, setRawInput] = useState<string | undefined>(JSON.stringify(sampleBenchmarks, null, 2));
+  const [filter, setFilter] = useState<Filters | undefined>();
   const [searchParams] = useSearchParams();
 
   const benchmarkId = searchParams.get("benchmarkId");
+  const filtersQueryP = searchParams.get("filters");
 
   useEffect(() => {
     if (benchmarkId) {
@@ -39,6 +41,17 @@ function App() {
       }
     }
   }, [benchmarkId]);
+
+  useEffect(() => {
+    if (filtersQueryP) {
+      try {
+        setFilter(JSON.parse(filtersQueryP));
+      }catch(e) {
+        console.error(e);
+      }
+    }
+  }, [filtersQueryP]);
+
 
   const [localBenchmarks, setLocalBenchmarks] = useState<Record<string, string | undefined> | undefined>();
 
@@ -57,16 +70,12 @@ function App() {
   useEffect(() => {
     try {
       const value = JSON.parse(rawInput ?? "");
-      setFilteredBenchmarks(value.benchmarks);
       setBenchmarks(value.benchmarks);
     } catch (e) {
       setBenchmarks([]);
       console.error(e);
     }
   }, [rawInput]);
-
-
-  const [filter, setFilter] = useState<Filters | undefined>();
 
   const [filteredBenchmarks, setFilteredBenchmarks] = useState<
     Benchmark[] | undefined
@@ -79,7 +88,7 @@ function App() {
         filter?.benchmarkNames.includes(benchmark.name)
       )
     );
-  }, [filter]);
+  }, [filter, benchmarks]);
 
   return (
     <div className="flex flex-col h-dvh w-dvw">
@@ -165,6 +174,7 @@ function App() {
             <Button onClick={() => {
               const url = new URL(window.location.href);
               url.searchParams.set("benchmarkId", rawInput ?? "");
+              url.searchParams.set("filters", JSON.stringify(filter) ?? "");
               navigator.clipboard.writeText(url.toString()).then(() => {
                 console.log("New URL", url.toString())
                 alert("Link copied to clipboard");
