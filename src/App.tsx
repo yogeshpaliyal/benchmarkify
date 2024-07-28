@@ -31,18 +31,18 @@ function App() {
   const [filter, setFilter] = useState<Filters | undefined>();
   const [searchParams] = useSearchParams();
 
-  const benchmarkId = searchParams.get("benchmarkId");
+  const benchmarkFromRequest = searchParams.get("benchmarks");
   const filtersQueryP = searchParams.get("filters");
 
   useEffect(() => {
-    if (benchmarkId) {
+    if (benchmarkFromRequest) {
       try {
-        setRawInput(benchmarkId);
+        setRawInput(benchmarkFromRequest);
       } catch (e) {
         console.error(e);
       }
     }
-  }, [benchmarkId]);
+  }, [benchmarkFromRequest]);
 
   useEffect(() => {
     if (filtersQueryP) {
@@ -183,20 +183,23 @@ function App() {
 
               <div className="space-x-4">
                 <Compare benchmarks={benchmarks} />
-              <Button
-                onClick={() => {
-                  const url = new URL(window.location.href);
-                  url.searchParams.set("benchmarkId", rawInput ?? "");
-                  url.searchParams.set("filters", JSON.stringify(filter) ?? "");
-                  navigator.clipboard.writeText(url.toString()).then(() => {
-                    console.log("New URL", url.toString());
-                    alert("Link copied to clipboard");
-                  });
-                }}
-              >
-                {" "}
-                Share{" "}
-              </Button>
+                <Button
+                  onClick={() => {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set("benchmarks", rawInput ?? "");
+                    url.searchParams.set(
+                      "filters",
+                      JSON.stringify(filter) ?? ""
+                    );
+                    navigator.clipboard.writeText(url.toString()).then(() => {
+                      console.log("New URL", url.toString());
+                      alert("Link copied to clipboard");
+                    });
+                  }}
+                >
+                  {" "}
+                  Share{" "}
+                </Button>
               </div>
             </div>
 
