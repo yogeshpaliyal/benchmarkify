@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Benchmark } from "@/types/benchmark";
 import { useMemo, useState } from "react";
+import { ArrowDown } from "@phosphor-icons/react";
 import {
   Dialog,
   DialogContent,
@@ -22,6 +23,8 @@ import {
   DropdownMenuCheckboxItemProps,
   DropdownMenuRadioItem,
 } from "@radix-ui/react-dropdown-menu";
+import { twMerge } from "tailwind-merge";
+import { FormLabel } from "@/components/ui/form";
 
 export function Compare({
   benchmarks,
@@ -46,12 +49,6 @@ export function Compare({
     return Array.from(metrics);
   }, [benchmarks]);
 
-  const benchmarkNames: string[] = useMemo(() => {
-    const bm = new Set<string>();
-    benchmarks?.forEach((benchmark) => bm.add(benchmark.name));
-    return Array.from(bm);
-  }, [benchmarks]);
-
   return (
     <Dialog
       onOpenChange={(open: boolean) => {
@@ -63,67 +60,29 @@ export function Compare({
       }}
     >
       <DialogTrigger>
-        <Button>Compare</Button>
+        <Button>Compare Benchmarks</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Compare</DialogTitle>
+          <DialogTitle>Compare Benchmarks</DialogTitle>
           <DialogDescription>
-            Select the Base and Compare benchmarks and the metric to compare
+            Select the Base and Benchmark to compare and the metric.
           </DialogDescription>
         </DialogHeader>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline">
-              {selectedBaseBenchmarks?.name ?? "Select Base Benchmark"}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56">
-            <DropdownMenuSeparator />
-            <DropdownMenuRadioGroup value={selectedBaseBenchmarks?.name}>
-              {benchmarks?.map((benchmark) => {
-                return (
-                  <DropdownMenuRadioItem
-                    key={benchmark.name}
-                    value={benchmark.name}
-                    onSelect={() => {
-                      setSelectedBaseBenchmarks(benchmark);
-                    }}
-                  >
-                    {benchmark.name}
-                  </DropdownMenuRadioItem>
-                );
-              })}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <BenchmarkSelector
+          label="Base Benchmark"
+          benchmarks={benchmarks}
+          selectedBenchmark={selectedBaseBenchmarks}
+          setSelectedBenchmark={setSelectedBaseBenchmarks}
+        />
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline">
-              {selectedAfterBenchmarks?.name ?? "Select Compare Benchmark"}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56">
-            <DropdownMenuSeparator />
-            <DropdownMenuRadioGroup value={selectedAfterBenchmarks?.name}>
-              {benchmarks?.map((benchmark) => {
-                return (
-                  <DropdownMenuRadioItem
-                    key={benchmark.name}
-                    value={benchmark.name}
-                    onSelect={() => {
-                      setSelectedAfterBenchmarks(benchmark);
-                    }}
-                  >
-                    {benchmark.name}
-                  </DropdownMenuRadioItem>
-                );
-              })}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <BenchmarkSelector
+          label="After Benchmark"
+          benchmarks={benchmarks}
+          selectedBenchmark={selectedAfterBenchmarks}
+          setSelectedBenchmark={setSelectedAfterBenchmarks}
+        />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -163,6 +122,49 @@ export function Compare({
   );
 }
 
+function BenchmarkSelector({
+  selectedBenchmark,
+  label,
+  benchmarks,
+  setSelectedBenchmark,
+}: {
+  setSelectedBenchmark: (benchmark: Benchmark) => void;
+  benchmarks: Benchmark[] | undefined;
+  selectedBenchmark: Benchmark | undefined;
+  label: string;
+}) {
+  return (
+    <div className="w-full flex flex-col">
+      {!!selectedBenchmark ? <h6>{label}</h6> : ""}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline">
+            {selectedBenchmark?.name ?? "Select " + label}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-56">
+          <DropdownMenuSeparator />
+          <DropdownMenuRadioGroup value={selectedBenchmark?.name}>
+            {benchmarks?.map((benchmark) => {
+              return (
+                <DropdownMenuRadioItem
+                  key={benchmark.name}
+                  value={benchmark.name}
+                  onSelect={() => {
+                    setSelectedBenchmark(benchmark);
+                  }}
+                >
+                  {benchmark.name}
+                </DropdownMenuRadioItem>
+              );
+            })}
+          </DropdownMenuRadioGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+}
+
 function Result({
   base,
   after,
@@ -172,26 +174,75 @@ function Result({
   after: Benchmark;
   metric: string;
 }) {
-  const minDiff = base.metrics[metric].minimum - after.metrics[metric].minimum;
-  const medianDiff = base.metrics[metric].median - after.metrics[metric].median;
-  const maxDiff = base.metrics[metric].maximum - after.metrics[metric].maximum;
+  return (
+    <div className="flex flex-col gap-4">
+      <h2 className="w-full text-center text-xl">
+        <b>Comparision</b>
+      </h2>
+      <div className="flex gap-4 flex-col">
+        <ResultLine
+          name={"Minimum"}
+          before={base.metrics[metric].minimum}
+          after={after.metrics[metric].minimum}
+        />
+        <ResultLine
+          name={"Median"}
+          before={base.metrics[metric].median}
+          after={after.metrics[metric].median}
+        />
+        <ResultLine
+          name={"Maximum"}
+          before={base.metrics[metric].maximum}
+          after={after.metrics[metric].maximum}
+        />
+      </div>
+    </div>
+  );
+}
+
+function ResultLine({
+  name,
+  before,
+  after,
+}: {
+  name: string;
+  before: number;
+  after: number;
+}) {
+  const diff = after - before;
+  const diffPercentage = Math.abs((diff / ((after + before) / 2)) * 100);
+  let conditionalStyling = "";
+  let conditionalText = "";
+
+  switch (true) {
+    case diff > 0:
+      conditionalStyling = "bg-red-500";
+      conditionalText = "worse";
+      break;
+    case diff < 0:
+      conditionalStyling = "bg-green-500";
+      conditionalText = "better";
+      break;
+    default:
+      conditionalStyling = "bg-yellow-500";
+      conditionalText = "same";
+  }
 
   return (
-    <div>
-      <div>
-        {base.name} vs {after.name} {metric}
+    <div className="gap-2 flex flex-row flex-wrap">
+      {"-"} <b>{name}</b>: After performed <b>{diffPercentage.toFixed(2)}% </b>
+      <div
+        className={twMerge(
+          conditionalStyling,
+          "text-white",
+          "inline",
+          "px-1",
+          "rounded"
+        )}
+      >
+        <b>{conditionalText}</b>
       </div>
-      <div>
-        <div>
-          Minimum = {minDiff > 0 ? "Base is faster" : "After is faster"}
-        </div>
-        <div>
-          Median = {medianDiff > 0 ? "Base is faster" : "After is faster"}
-        </div>
-        <div>
-          Maximum = {maxDiff > 0 ? "Base is faster" : "After is faster"}
-        </div>
-      </div>
+      {Math.abs(diff).toFixed(2)} ms
     </div>
   );
 }
