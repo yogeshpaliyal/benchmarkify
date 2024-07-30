@@ -60,8 +60,8 @@ export function CompareChart({
     })) || [];
 
   return (
-    <Card>
-      <CardHeader>
+    <Card >
+      <CardHeader >
         <CardTitle>{filter?.metrics}</CardTitle>
       </CardHeader>
       <CardContent>

@@ -60,7 +60,7 @@ export function Compare({
       }}
     >
       <DialogTrigger>
-        <Button>Compare Benchmarks</Button>
+        <Button className="w-[100%]">Compare Benchmarks</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -88,7 +88,7 @@ export function Compare({
           {!!selectedMetric ? <h6>Metric</h6> : ""}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline">
+              <Button variant="outline" >
                 {selectedMetric ?? "Select Metric"}
               </Button>
             </DropdownMenuTrigger>
@@ -142,7 +142,7 @@ function BenchmarkSelector({
       {!!selectedBenchmark ? <h6>{label}</h6> : ""}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline">
+          <Button  variant="outline" >
             {selectedBenchmark?.name ?? "Select " + label}
           </Button>
         </DropdownMenuTrigger>

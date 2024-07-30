@@ -92,7 +92,7 @@ function App() {
   }, [filter, benchmarks]);
 
   return (
-    <div className="flex flex-col h-dvh w-dvw">
+    <div className="flex flex-col ">
       <div className="flex flex-row w-full justify-between p-4">
         <h1 className="text-4xl font-bold text-center ">BenchMarkify 📈</h1>
         <div className="flex flex-wrap sm:space-y-4 md:space-y-0 md:space-x-4 mx-4 justify-end">
@@ -108,13 +108,13 @@ function App() {
       </div>
       <div className="md:flex flex-row flex-1 w-full">
         <div className="flex flex-1 flex-col p-4" style={{ flex: 1 }}>
-          <div className="w-full flex flex-row space-x-4 pb-4">
+          <div className="w-full flex flex-row gap-2 pb-4 max-md:flex-col">
             <Select
               onValueChange={(selectedItem) =>
                 setRawInput(localBenchmarks?.[selectedItem])
               }
             >
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="md:w-[180px] ">
                 <SelectValue placeholder="Select Saved Benchmark" />
               </SelectTrigger>
               <SelectContent>
@@ -131,9 +131,10 @@ function App() {
                 </SelectGroup>
               </SelectContent>
             </Select>
-            <div className="space-x-4">
+            <div className=" flex max-sm:flex-col gap-2">
               <Button
-                variant={"ghost"}
+              className="max-md:flex-1"
+                variant={"outline"}
                 onClick={() => {
                   let value = window.prompt("Save Baseline profile", "");
                   if (value) {
@@ -155,7 +156,7 @@ function App() {
               >
                 Save
               </Button>
-              <Button variant={"ghost"} onClick={() => setRawInput("")}>
+              <Button className="max-md:flex-1" variant={"outline"} onClick={() => setRawInput("")}>
                 Clear
               </Button>
             </div>
@@ -170,18 +171,18 @@ function App() {
           />
         </div>
         <div
-          className="flex flex-1 justify-around content-around p-8"
+          className="flex flex-1 justify-around content-around p-4"
           style={{ flex: 2 }}
         >
           <div className="w-full">
-            <div className="w-full flex flex-row justify-between">
+            <div className="w-full flex flex-row max-sm:flex-col justify-between">
               <FiltersSelector
                 benchmarks={benchmarks}
                 filters={filter}
                 setFilters={setFilter}
               />
 
-              <div className="space-x-4">
+              <div className="flex gap-[10px] max-sm:flex-col max-lg:flex-col pb-4">
                 <Compare benchmarks={benchmarks} />
                 <Button
                   onClick={() => {
@@ -203,16 +204,18 @@ function App() {
               </div>
             </div>
 
-            <Tabs defaultValue="charts" className="w-full">
+            <Tabs defaultValue="charts" >
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="charts">Charts</TabsTrigger>
                 <TabsTrigger value="table">Table</TabsTrigger>
               </TabsList>
               <TabsContent value="charts">
-                <CompareChart filter={filter} benchmarks={filteredBenchmarks} />
+                <div className=" ">
+                <CompareChart  filter={filter} benchmarks={filteredBenchmarks}  />
+                </div>
               </TabsContent>
               <TabsContent value="table">
-                <BenchmarkTable
+                <BenchmarkTable 
                   benchmarks={filteredBenchmarks}
                   filters={filter}
                 />
