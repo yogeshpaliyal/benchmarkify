@@ -214,7 +214,7 @@ function App() {
                 <TabsTrigger value="table">Table</TabsTrigger>
               </TabsList>
               <TabsContent value="charts">
-                <div className=" ">
+                <div>
                   <CompareChart
                     filter={filter}
                     benchmarks={filteredBenchmarks}
