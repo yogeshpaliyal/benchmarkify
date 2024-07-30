@@ -46,7 +46,8 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function CompareChart({
-  benchmarks, filter
+  benchmarks,
+  filter,
 }: {
   benchmarks: Benchmark[] | undefined;
   filter: Filters | undefined;

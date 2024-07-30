@@ -48,7 +48,7 @@ export function FiltersSelector({
   }, [benchmarks]);
 
   return (
-    <div className="space-x-4 pb-4">
+    <div className="flex gap-[8px] max-sm:flex-col max-lg:flex-col pb-4 ">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline">Select Benchmarks</Button>

@@ -60,7 +60,7 @@ export function Compare({
       }}
     >
       <DialogTrigger>
-        <Button>Compare Benchmarks</Button>
+        <Button className="w-[100%]">Compare Benchmarks</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
