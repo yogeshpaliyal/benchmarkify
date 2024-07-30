@@ -114,7 +114,7 @@ function App() {
                 setRawInput(localBenchmarks?.[selectedItem])
               }
             >
-              <SelectTrigger className="md:w-[180px] ">
+              <SelectTrigger className="md:w-[180px]">
                 <SelectValue placeholder="Select Saved Benchmark" />
               </SelectTrigger>
               <SelectContent>
