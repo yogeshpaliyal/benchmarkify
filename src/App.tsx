@@ -133,7 +133,7 @@ function App() {
             </Select>
             <div className=" flex max-sm:flex-col gap-2">
               <Button
-              className="max-md:flex-1"
+                className="max-md:flex-1"
                 variant={"outline"}
                 onClick={() => {
                   let value = window.prompt("Save Baseline profile", "");
@@ -156,7 +156,11 @@ function App() {
               >
                 Save
               </Button>
-              <Button className="max-md:flex-1" variant={"outline"} onClick={() => setRawInput("")}>
+              <Button
+                className="max-md:flex-1"
+                variant={"outline"}
+                onClick={() => setRawInput("")}
+              >
                 Clear
               </Button>
             </div>
@@ -182,7 +186,7 @@ function App() {
                 setFilters={setFilter}
               />
 
-              <div className="flex gap-[10px] max-sm:flex-col max-lg:flex-col pb-4">
+              <div className="flex gap-[8px] max-sm:flex-col max-lg:flex-col pb-4">
                 <Compare benchmarks={benchmarks} />
                 <Button
                   onClick={() => {
@@ -204,18 +208,21 @@ function App() {
               </div>
             </div>
 
-            <Tabs defaultValue="charts" >
+            <Tabs defaultValue="charts">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="charts">Charts</TabsTrigger>
                 <TabsTrigger value="table">Table</TabsTrigger>
               </TabsList>
               <TabsContent value="charts">
                 <div className=" ">
-                <CompareChart  filter={filter} benchmarks={filteredBenchmarks}  />
+                  <CompareChart
+                    filter={filter}
+                    benchmarks={filteredBenchmarks}
+                  />
                 </div>
               </TabsContent>
               <TabsContent value="table">
-                <BenchmarkTable 
+                <BenchmarkTable
                   benchmarks={filteredBenchmarks}
                   filters={filter}
                 />
