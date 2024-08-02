@@ -176,7 +176,7 @@ function App() {
           />
         </div>
         <div
-          className="flex  flex-[2] justify-around content-around p-4"
+          className="flex flex-[2] justify-around content-around p-4"
         >
           <div className="w-full flex flex-col">
             <div className="w-full flex flex-row max-sm:flex-col justify-between">
