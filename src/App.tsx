@@ -29,7 +29,7 @@ function App() {
     JSON.stringify(sampleBenchmarks, null, 2)
   );
   const [filter, setFilter] = useState<Filters | undefined>();
-  const [selectedTab, setSelectedTab] = useState<string | undefined>();
+  const [selectedTab, setSelectedTab] = useState<string | undefined>("charts");
   const [searchParams] = useSearchParams();
 
   const benchmarkFromRequest = searchParams.get("benchmarks");
