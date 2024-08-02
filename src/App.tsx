@@ -29,7 +29,7 @@ function App() {
     JSON.stringify(sampleBenchmarks, null, 2)
   );
   const [filter, setFilter] = useState<Filters | undefined>();
-  const [selectedTab, setSelectedTab] = useState<string | undefined>();
+  const [selectedTab, setSelectedTab] = useState<string | undefined>("charts");
   const [searchParams] = useSearchParams();
 
   const benchmarkFromRequest = searchParams.get("benchmarks");
@@ -176,7 +176,7 @@ function App() {
           />
         </div>
         <div
-          className="flex flex-[2] justify-around content-around p-4"
+          className="flex  flex-[2] justify-around content-around p-4"
         >
           <div className="w-full flex flex-col">
             <div className="w-full flex flex-row max-sm:flex-col justify-between">
