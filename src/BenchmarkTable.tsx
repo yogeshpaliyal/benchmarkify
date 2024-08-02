@@ -26,13 +26,15 @@ export function BenchmarkTable({
       })) || []
     
 
-  return (<Table>
+  return (
+  <div className="flex-1 w-0">
+    <Table>
     <TableHeader>
       <TableRow>
-        <TableHead className="w-[100px]">Name</TableHead>
+        <TableHead >Name</TableHead>
         <TableHead>Minimum</TableHead>
         <TableHead>Median</TableHead>
-        <TableHead className="text-right">Maximum</TableHead>
+        <TableHead >Maximum</TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>
@@ -42,10 +44,11 @@ export function BenchmarkTable({
          <TableCell className="font-medium">{item.name}</TableCell>
          <TableCell>{item.minimum}</TableCell>
          <TableCell>{item.median}</TableCell>
-         <TableCell className="text-right">{item.maximum}</TableCell>
+         <TableCell>{item.maximum}</TableCell>
          </TableRow>
       ))}
       
     </TableBody>
-  </Table>);
+  </Table>
+  </div>);
 }

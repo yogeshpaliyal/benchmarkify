@@ -29,6 +29,7 @@ function App() {
     JSON.stringify(sampleBenchmarks, null, 2)
   );
   const [filter, setFilter] = useState<Filters | undefined>();
+  const [selectedTab, setSelectedTab] = useState<string | undefined>();
   const [searchParams] = useSearchParams();
 
   const benchmarkFromRequest = searchParams.get("benchmarks");
@@ -92,7 +93,7 @@ function App() {
   }, [filter, benchmarks]);
 
   return (
-    <div className="flex flex-col ">
+    <div className="flex flex-col h-dvh">
       <div className="flex flex-row w-full justify-between p-4">
         <h1 className="text-4xl font-bold text-center ">BenchMarkify 📈</h1>
         <div className="flex flex-wrap sm:space-y-4 md:space-y-0 md:space-x-4 mx-4 justify-end">
@@ -107,7 +108,7 @@ function App() {
         </div>
       </div>
       <div className="md:flex flex-row flex-1 w-full">
-        <div className="flex flex-1 flex-col p-4" style={{ flex: 1 }}>
+        <div className="flex flex-1 flex-col p-4">
           <div className="w-full flex flex-row gap-2 pb-4 max-md:flex-col">
             <Select
               onValueChange={(selectedItem) =>
@@ -175,10 +176,9 @@ function App() {
           />
         </div>
         <div
-          className="flex flex-1 justify-around content-around p-4"
-          style={{ flex: 2 }}
+          className="flex flex-[2] justify-around content-around p-4"
         >
-          <div className="w-full">
+          <div className="w-full flex flex-col">
             <div className="w-full flex flex-row max-sm:flex-col justify-between">
               <FiltersSelector
                 benchmarks={benchmarks}
@@ -208,25 +208,30 @@ function App() {
               </div>
             </div>
 
-            <Tabs defaultValue="charts">
+            <Tabs onValueChange={setSelectedTab} defaultValue="charts" className="flex-1 flex flex-col">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="charts">Charts</TabsTrigger>
                 <TabsTrigger value="table">Table</TabsTrigger>
               </TabsList>
-              <TabsContent value="charts">
-                <div>
+              {selectedTab == "charts" && <TabsContent className="flex-1 flex" value="charts">
+                <div className="flex-1 flex">
                   <CompareChart
                     filter={filter}
                     benchmarks={filteredBenchmarks}
                   />
                 </div>
               </TabsContent>
-              <TabsContent value="table">
+              }
+              { selectedTab == "table" &&
+              <TabsContent value="table" className="flex-1 flex">
+              <div className="flex-1 flex flex-row overflow-hidden">
                 <BenchmarkTable
                   benchmarks={filteredBenchmarks}
                   filters={filter}
                 />
+              </div>
               </TabsContent>
+}
             </Tabs>
           </div>
         </div>
