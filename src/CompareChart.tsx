@@ -61,12 +61,12 @@ export function CompareChart({
     })) || [];
 
   return (
-    <Card>
+    <Card className="flex-1 flex flex-col">
       <CardHeader>
         <CardTitle>{filter?.metrics}</CardTitle>
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig}>
+      <CardContent className="flex-1 flex">
+        <ChartContainer className="flex-1" config={chartConfig}>
           <LineChart
             accessibilityLayer
             data={chartData}
