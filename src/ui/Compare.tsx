@@ -199,6 +199,11 @@ function Result({
           before={base.metrics[metric].maximum}
           after={after.metrics[metric].maximum}
         />
+        <ResultLine
+          name={"Average"}
+          before={base.metrics[metric].average}
+          after={after.metrics[metric].average}
+        />
       </div>
     </div>
   );

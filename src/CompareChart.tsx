@@ -43,6 +43,10 @@ const chartConfig = {
     label: "maximum",
     color: "hsl(var(--chart-3))",
   },
+  average: {
+    label: "average",
+    color: "hsl(var(--chart-4))",
+  },
 } satisfies ChartConfig;
 
 export function CompareChart({
@@ -58,6 +62,7 @@ export function CompareChart({
       minimum: filter ? benchmark.metrics[filter.metrics]?.minimum : 0,
       median: filter ? benchmark.metrics[filter.metrics]?.median : 0,
       maximum: filter ? benchmark.metrics[filter.metrics]?.maximum : 0,
+      average: filter ? benchmark.metrics[filter.metrics]?.average : 0,
     })) || [];
 
   return (
@@ -106,6 +111,11 @@ export function CompareChart({
             <Line
               dataKey="maximum"
               stroke="var(--color-maximum)"
+              strokeWidth={2}
+            />
+            <Line
+              dataKey="average"
+              stroke="var(--color-average)"
               strokeWidth={2}
             />
             <ChartLegend content={<ChartLegendContent />} />
