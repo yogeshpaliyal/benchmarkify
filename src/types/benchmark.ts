@@ -35,5 +35,12 @@ export interface Metric {
     minimum: number;
     maximum: number;
     median: number;
+    average: number; // P9f84
     runs: number[];
+}
+
+// P9619: Calculate average from runs array
+export function calculateAverage(runs: number[]): number {
+    const total = runs.reduce((acc, run) => acc + run, 0);
+    return total / runs.length;
 }

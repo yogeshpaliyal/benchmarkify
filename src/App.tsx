@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 import { CompareChart } from "./CompareChart";
 import { Textarea } from "@/components/ui/textarea";
-import { Benchmark } from "./types/benchmark";
+import { Benchmark, calculateAverage } from "./types/benchmark";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BenchmarkTable } from "./BenchmarkTable";
 import sampleBenchmarks from "../samplebaseline.json";
@@ -73,7 +73,16 @@ function App() {
   useEffect(() => {
     try {
       const value = JSON.parse(rawInput ?? "");
-      setBenchmarks(value.benchmarks);
+      const benchmarksWithAverage = value.benchmarks.map((benchmark: Benchmark) => {
+        const metricsWithAverage = Object.keys(benchmark.metrics).reduce((acc, key) => {
+          const metric = benchmark.metrics[key];
+          const average = calculateAverage(metric.runs);
+          acc[key] = { ...metric, average };
+          return acc;
+        }, {} as Record<string, any>);
+        return { ...benchmark, metrics: metricsWithAverage };
+      });
+      setBenchmarks(benchmarksWithAverage);
     } catch (e) {
       setBenchmarks([]);
       console.error(e);
