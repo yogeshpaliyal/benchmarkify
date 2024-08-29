@@ -38,7 +38,7 @@ function App() {
   useEffect(() => {
     if (benchmarkFromRequest) {
       try {
-        setRawInput(benchmarkFromRequest);
+        setRawInput(JSON.stringify(JSON.parse(benchmarkFromRequest), null, 2));
       } catch (e) {
         console.error(e);
       }
@@ -200,7 +200,7 @@ function App() {
                 <Button
                   onClick={() => {
                     const url = new URL(window.location.href);
-                    url.searchParams.set("benchmarks", rawInput ?? "");
+                    url.searchParams.set("benchmarks", JSON.stringify(JSON.parse(rawInput ?? "")));
                     url.searchParams.set(
                       "filters",
                       JSON.stringify(filter) ?? ""
