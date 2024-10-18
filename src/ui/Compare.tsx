@@ -1,7 +1,23 @@
 import { Button } from "@/components/ui/button";
 import { Benchmark } from "@/types/benchmark";
-import { useMemo, useState } from "react";
-import { ArrowDown } from "@phosphor-icons/react";
+import React, { useMemo, useState } from "react";
+import { ArrowDown, CaretDown } from "@phosphor-icons/react";
+import { Check, ChevronsUpDown } from "lucide-react"
+ 
+import { cn } from "@/lib/utils";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import {
   Dialog,
   DialogContent,
@@ -10,19 +26,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  DropdownMenuCheckboxItemProps,
-  DropdownMenuRadioItem,
-} from "@radix-ui/react-dropdown-menu";
+
 import { twMerge } from "tailwind-merge";
 import { FormLabel } from "@/components/ui/form";
 
@@ -86,30 +90,38 @@ export function Compare({
 
         <div className="w-full flex flex-col">
           {!!selectedMetric ? <h6>Metric</h6> : ""}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+          <Popover  >
+          <PopoverTrigger asChild>
               <Button variant="outline">
                 {selectedMetric ?? "Select Metric"}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
-              <DropdownMenuSeparator />
-              <DropdownMenuRadioGroup
-                value={selectedMetric}
-                onValueChange={(newValue) => {
-                  setSelectedMetric(newValue);
-                }}
-              >
-                {metrics?.map((metric) => {
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />             
+                 </Button>
+            </PopoverTrigger >
+
+            <PopoverContent className="w-full">
+
+<Command>
+  <CommandInput placeholder="Search framework..." />
+  <CommandList>
+    <CommandEmpty>No framework found.</CommandEmpty>
+    <CommandGroup>
+    {metrics?.map((metric) => {
                   return (
-                    <DropdownMenuRadioItem key={metric} value={metric}>
+                    <CommandItem key={metric} value={metric}>
                       {metric}
-                    </DropdownMenuRadioItem>
+                    </CommandItem>
                   );
                 })}
-              </DropdownMenuRadioGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
+    </CommandGroup>
+  </CommandList>
+</Command>
+
+
+
+</PopoverContent>
+
+
+          </Popover>
         </div>
 
         {selectedMetric &&
@@ -137,34 +149,54 @@ function BenchmarkSelector({
   selectedBenchmark: Benchmark | undefined;
   label: string;
 }) {
+  const [open, setOpen] = React.useState(false)
+  const [value, setValue] = React.useState("")
+ 
   return (
     <div className="w-full flex flex-col">
       {!!selectedBenchmark ? <h6>{label}</h6> : ""}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline">
+      <Popover open={open} onOpenChange={setOpen} >
+        <PopoverTrigger asChild>
+          <Button variant="outline"  role="combobox"
+          aria-expanded={open}>
             {selectedBenchmark?.name ?? "Select " + label}
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56">
-          <DropdownMenuSeparator />
-          <DropdownMenuRadioGroup value={selectedBenchmark?.name}>
-            {benchmarks?.map((benchmark) => {
-              return (
-                <DropdownMenuRadioItem
+        </PopoverTrigger>
+        <PopoverContent className="w-full">
+
+        <Command>
+          <CommandInput placeholder="Search framework..." />
+          <CommandList>
+            <CommandEmpty>No framework found.</CommandEmpty>
+            <CommandGroup>
+              {benchmarks?.map((benchmark) => (
+                <CommandItem
                   key={benchmark.name}
                   value={benchmark.name}
-                  onSelect={() => {
-                    setSelectedBenchmark(benchmark);
+                  onSelect={(currentValue) => {
+                    setValue(currentValue === value ? "" : currentValue)
+                    setSelectedBenchmark(benchmark)
+                    setOpen(false)
                   }}
                 >
+                  <Check
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      value === benchmark.name ? "opacity-100" : "opacity-0"
+                    )}
+                  />
                   {benchmark.name}
-                </DropdownMenuRadioItem>
-              );
-            })}
-          </DropdownMenuRadioGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+
+
+        
+        </PopoverContent>
+      </Popover>
     </div>
   );
 }
