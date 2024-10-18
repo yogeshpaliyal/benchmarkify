@@ -107,8 +107,14 @@ export function Compare({
     <CommandGroup>
     {metrics?.map((metric) => {
                   return (
-                    <CommandItem key={metric} value={metric}>
-                      {metric}
+                    <CommandItem key={metric} value={metric} onSelect={(currentValue) => {setSelectedMetric(currentValue);}}>
+                     <Check
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      selectedMetric === metric ? "opacity-100" : "opacity-0"
+                    )}
+                  />
+                     {metric}
                     </CommandItem>
                   );
                 })}
