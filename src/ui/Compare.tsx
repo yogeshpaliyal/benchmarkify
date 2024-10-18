@@ -42,6 +42,7 @@ export function Compare({
   const [selectedAfterBenchmarks, setSelectedAfterBenchmarks] = useState<
     Benchmark | undefined
   >();
+  const [open, setOpen] = React.useState(false)
 
   const metrics: string[] = useMemo(() => {
     const metrics = new Set<string>();
@@ -90,7 +91,7 @@ export function Compare({
 
         <div className="w-full flex flex-col">
           {!!selectedMetric ? <h6>Metric</h6> : ""}
-          <Popover  >
+                <Popover open={open} onOpenChange={setOpen} >
           <PopoverTrigger asChild>
               <Button variant="outline">
                 {selectedMetric ?? "Select Metric"}
@@ -107,7 +108,8 @@ export function Compare({
     <CommandGroup>
     {metrics?.map((metric) => {
                   return (
-                    <CommandItem key={metric} value={metric} onSelect={(currentValue) => {setSelectedMetric(currentValue);}}>
+                    <CommandItem key={metric} value={metric} onSelect={(currentValue) => {setSelectedMetric(currentValue);
+setOpen(false);}}>
                      <Check
                     className={cn(
                       "mr-2 h-4 w-4",
