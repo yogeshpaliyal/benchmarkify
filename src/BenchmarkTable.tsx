@@ -23,7 +23,7 @@ export function BenchmarkTable({
         minimum: filters ? benchmark.metrics[filters.metrics].minimum : 0,
         median: filters ? benchmark.metrics[filters.metrics].median : 0,
         maximum: filters ? benchmark.metrics[filters.metrics].maximum : 0,
-        average: filters ? benchmark.metrics[filters.metrics].average : 0, // P6fae
+        average: filters ? benchmark.metrics[filters.metrics].average : 0,
       })) || []
     
 
@@ -36,7 +36,7 @@ export function BenchmarkTable({
         <TableHead>Minimum</TableHead>
         <TableHead>Median</TableHead>
         <TableHead >Maximum</TableHead>
-        <TableHead >Average</TableHead> {/* P2974 */}
+        <TableHead >Average</TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>
@@ -47,7 +47,7 @@ export function BenchmarkTable({
          <TableCell>{item.minimum}</TableCell>
          <TableCell>{item.median}</TableCell>
          <TableCell>{item.maximum}</TableCell>
-         <TableCell>{item.average}</TableCell> {/* P6fae */}
+         <TableCell>{item.average}</TableCell>
          </TableRow>
       ))}
       

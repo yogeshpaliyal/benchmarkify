@@ -101,6 +101,36 @@ function App() {
     );
   }, [filter, benchmarks]);
 
+  const validateJson = (json: any) => {
+    const sampleJson = sampleBenchmarks;
+    const isValidContext = JSON.stringify(Object.keys(json.context)) === JSON.stringify(Object.keys(sampleJson.context));
+    const isValidBenchmarks = json.benchmarks.every((benchmark: any) => {
+      return JSON.stringify(Object.keys(benchmark)) === JSON.stringify(Object.keys(sampleJson.benchmarks[0]));
+    });
+    return isValidContext && isValidBenchmarks;
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const content = e.target?.result as string;
+        try {
+          const json = JSON.parse(content);
+          if (validateJson(json)) {
+            setRawInput(content);
+          } else {
+            alert("Invalid JSON structure");
+          }
+        } catch (error) {
+          alert("Invalid JSON file");
+        }
+      };
+      reader.readAsText(file);
+    }
+  };
+
   return (
     <div className="flex flex-col h-dvh">
       <div className="flex flex-row w-full justify-between p-4">
@@ -175,6 +205,12 @@ function App() {
               </Button>
             </div>
           </div>
+          <input
+            type="file"
+            accept=".json"
+            onChange={handleFileUpload}
+            className="mb-4"
+          />
           <Textarea
             className="flex-1"
             value={rawInput}
