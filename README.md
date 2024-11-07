@@ -17,6 +17,7 @@
 2. Select any metric.
 3. Compare Benchmarks in Charts or tables.
 4. Store Benchmarks locally to use later.
+5. Share the results with team. (we do not store any data).
 
 ## ⌨️ Usage
 
