@@ -205,11 +205,19 @@ function App() {
               </Button>
             </div>
           </div>
+          <Button
+            variant="outline"
+            className="mb-4 hover:bg-gray-200 focus:bg-gray-300"
+            onClick={() => document.getElementById("fileInput")?.click()}
+          >
+            Upload JSON File
+          </Button>
           <input
+            id="fileInput"
             type="file"
             accept=".json"
             onChange={handleFileUpload}
-            className="mb-4"
+            className="hidden"
           />
           <Textarea
             className="flex-1"
