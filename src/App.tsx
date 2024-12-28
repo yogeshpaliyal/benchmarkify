@@ -21,7 +21,7 @@ import {
 import { useSearchParams } from "react-router-dom";
 import { Compare } from "./ui/Compare";
 
-function App({ json }: { json: string | undefined }) {
+function App({ json, resetJson }: { json: string | undefined, resetJson: () => void }) {
   const [benchmarks, setBenchmarks] = useState<Benchmark[] | undefined>([]);
 
   const [rawInput, setRawInput] = useState<string | undefined>(json);
@@ -202,7 +202,7 @@ function App({ json }: { json: string | undefined }) {
           <Button
             variant="outline"
             className="mb-4 hover:bg-gray-200 focus:bg-gray-300"
-            onClick={() => document.getElementById("fileInput")?.click()}
+            onClick={() => resetJson()}
           >
             Upload JSON File
           </Button>
@@ -235,7 +235,7 @@ function App({ json }: { json: string | undefined }) {
                 <Compare benchmarks={benchmarks} />
                 <Button
                   onClick={() => {
-                    const url = new URL("https://github.yogeshpaliyal.com/benchmarkify/#/result/");
+                    const url = new URL(window.location.href);
                     url.searchParams.set(
                       "benchmarks",
                       JSON.stringify(JSON.parse(rawInput ?? ""))

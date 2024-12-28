@@ -3,9 +3,8 @@ import { Github } from 'lucide-react'
 
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "./theme-toggle"
-import { Outlet } from 'react-router-dom'
 
-export function Shell() {
+export function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative flex min-h-screen flex-col">
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -28,9 +27,7 @@ export function Shell() {
           </div>
         </div>
       </header>
-      <main className="flex-1">
-        <Outlet />
-      </main>
+      <main className="flex-1">{children}</main>
       <footer className="border-t py-6">
         <div className="container flex flex-col items-center gap-4 md:h-14 md:flex-row justify-center">
           <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">

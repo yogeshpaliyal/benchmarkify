@@ -6,7 +6,6 @@ import { Card } from "@/components/ui/card";
 // import { useToast } from "@/components/ui/use-toast"
 import sampleData from "../../samplebaseline.json";
 import { BenchmarkContext as BenchmarkData } from "../types/benchmark";
-import { useNavigate } from "react-router-dom";
 
 export interface UploadProps {
   setRawInput: (json: string) => void;
@@ -15,7 +14,6 @@ export interface UploadProps {
 export function Upload({ setRawInput }: UploadProps) {
   const [isDragging, setIsDragging] = useState(false);
   //   const { toast } = useToast()
-  let navigate = useNavigate();
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -24,7 +22,6 @@ export function Upload({ setRawInput }: UploadProps) {
 
   const setData = (json: string) => {
     setRawInput(json);
-    navigate("/result");
   };
 
   const handleDragLeave = () => {
