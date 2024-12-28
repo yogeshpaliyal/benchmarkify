@@ -119,7 +119,7 @@ function App({ json, resetJson }: { json: string | undefined, resetJson: () => v
 
   return (
     <div className="flex flex-col">
-      <div className="md:flex flex-row flex-1 w-full">
+      <div className="lg:flex flex-row flex-1 w-full">
         <div className="flex flex-1 flex-col p-4">
           <div className="w-full flex flex-row gap-2 pb-4 max-md:flex-col">
             <Select
@@ -194,7 +194,7 @@ function App({ json, resetJson }: { json: string | undefined, resetJson: () => v
             }}
           />
         </div>
-        <div className="flex flex-[2] justify-around content-around p-4">
+        <div className="flex flex-[3] justify-around content-around p-4">
           <div className="w-full flex flex-col">
             <div className="w-full flex flex-row max-sm:flex-col justify-between">
               <FiltersSelector
