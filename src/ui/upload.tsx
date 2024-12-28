@@ -24,7 +24,7 @@ export function Upload({ setRawInput }: UploadProps) {
 
   const setData = (json: string) => {
     setRawInput(json);
-    navigate("result");
+    navigate("/result");
   };
 
   const handleDragLeave = () => {
