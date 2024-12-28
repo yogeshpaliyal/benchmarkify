@@ -235,7 +235,7 @@ function App({ json }: { json: string | undefined }) {
                 <Compare benchmarks={benchmarks} />
                 <Button
                   onClick={() => {
-                    const url = new URL(window.location.href);
+                    const url = new URL("https://github.yogeshpaliyal.com/benchmarkify/#/result");
                     url.searchParams.set(
                       "benchmarks",
                       JSON.stringify(JSON.parse(rawInput ?? ""))
