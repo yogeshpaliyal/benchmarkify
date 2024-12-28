@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import "./App.css";
 import { CompareChart } from "./CompareChart";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,16 +18,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ModeToggle } from "./ui/mode-toggle";
-import GithubIcon from "./assets/github-mark";
 import { useSearchParams } from "react-router-dom";
 import { Compare } from "./ui/Compare";
 
-function App() {
+function App({ json }: { json: string | undefined }) {
   const [benchmarks, setBenchmarks] = useState<Benchmark[] | undefined>([]);
-  const [rawInput, setRawInput] = useState<string | undefined>(
-    JSON.stringify(sampleBenchmarks, null, 2)
-  );
+
+  const [rawInput, setRawInput] = useState<string | undefined>(json);
   const [filter, setFilter] = useState<Filters | undefined>();
   const [selectedTab, setSelectedTab] = useState<string | undefined>("charts");
   const [searchParams] = useSearchParams();
@@ -73,15 +70,20 @@ function App() {
   useEffect(() => {
     try {
       const value = JSON.parse(rawInput ?? "");
-      const benchmarksWithAverage = value.benchmarks.map((benchmark: Benchmark) => {
-        const metricsWithAverage = Object.keys(benchmark.metrics).reduce((acc, key) => {
-          const metric = benchmark.metrics[key];
-          const average = calculateAverage(metric.runs);
-          acc[key] = { ...metric, average };
-          return acc;
-        }, {} as Record<string, any>);
-        return { ...benchmark, metrics: metricsWithAverage };
-      });
+      const benchmarksWithAverage = value.benchmarks.map(
+        (benchmark: Benchmark) => {
+          const metricsWithAverage = Object.keys(benchmark.metrics).reduce(
+            (acc, key) => {
+              const metric = benchmark.metrics[key];
+              const average = calculateAverage(metric.runs);
+              acc[key] = { ...metric, average };
+              return acc;
+            },
+            {} as Record<string, any>
+          );
+          return { ...benchmark, metrics: metricsWithAverage };
+        }
+      );
       setBenchmarks(benchmarksWithAverage);
     } catch (e) {
       setBenchmarks([]);
@@ -103,9 +105,14 @@ function App() {
 
   const validateJson = (json: any) => {
     const sampleJson = sampleBenchmarks;
-    const isValidContext = JSON.stringify(Object.keys(json.context)) === JSON.stringify(Object.keys(sampleJson.context));
+    const isValidContext =
+      JSON.stringify(Object.keys(json.context)) ===
+      JSON.stringify(Object.keys(sampleJson.context));
     const isValidBenchmarks = json.benchmarks.every((benchmark: any) => {
-      return JSON.stringify(Object.keys(benchmark)) === JSON.stringify(Object.keys(sampleJson.benchmarks[0]));
+      return (
+        JSON.stringify(Object.keys(benchmark)) ===
+        JSON.stringify(Object.keys(sampleJson.benchmarks[0]))
+      );
     });
     return isValidContext && isValidBenchmarks;
   };
@@ -133,19 +140,6 @@ function App() {
 
   return (
     <div className="flex flex-col h-dvh">
-      <div className="flex flex-row w-full justify-between p-4">
-        <h1 className="text-4xl font-bold text-center ">BenchMarkify 📈</h1>
-        <div className="flex flex-wrap sm:space-y-4 md:space-y-0 md:space-x-4 mx-4 justify-end">
-          <ModeToggle />
-          <a
-            className="content-center"
-            href="https://github.com/yogeshpaliyal/benchmarkify"
-            target="_blank"
-          >
-            <GithubIcon />
-          </a>
-        </div>
-      </div>
       <div className="md:flex flex-row flex-1 w-full">
         <div className="flex flex-1 flex-col p-4">
           <div className="w-full flex flex-row gap-2 pb-4 max-md:flex-col">
@@ -228,9 +222,7 @@ function App() {
             }}
           />
         </div>
-        <div
-          className="flex flex-[2] justify-around content-around p-4"
-        >
+        <div className="flex flex-[2] justify-around content-around p-4">
           <div className="w-full flex flex-col">
             <div className="w-full flex flex-row max-sm:flex-col justify-between">
               <FiltersSelector
@@ -244,7 +236,10 @@ function App() {
                 <Button
                   onClick={() => {
                     const url = new URL(window.location.href);
-                    url.searchParams.set("benchmarks", JSON.stringify(JSON.parse(rawInput ?? "")));
+                    url.searchParams.set(
+                      "benchmarks",
+                      JSON.stringify(JSON.parse(rawInput ?? ""))
+                    );
                     url.searchParams.set(
                       "filters",
                       JSON.stringify(filter) ?? ""
@@ -261,40 +256,38 @@ function App() {
               </div>
             </div>
 
-            <Tabs onValueChange={setSelectedTab} defaultValue="charts" className="flex-1 flex flex-col">
+            <Tabs
+              onValueChange={setSelectedTab}
+              defaultValue="charts"
+              className="flex-1 flex flex-col"
+            >
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="charts">Charts</TabsTrigger>
                 <TabsTrigger value="table">Table</TabsTrigger>
               </TabsList>
-              {selectedTab == "charts" && <TabsContent className="flex-1 flex" value="charts">
-                <div className="flex-1 flex">
-                  <CompareChart
-                    filter={filter}
-                    benchmarks={filteredBenchmarks}
-                  />
-                </div>
-              </TabsContent>
-              }
-              { selectedTab == "table" &&
-              <TabsContent value="table" className="flex-1 flex">
-              <div className="flex-1 flex flex-row overflow-hidden">
-                <BenchmarkTable
-                  benchmarks={filteredBenchmarks}
-                  filters={filter}
-                />
-              </div>
-              </TabsContent>
-}
+              {selectedTab == "charts" && (
+                <TabsContent className="flex-1 flex" value="charts">
+                  <div className="flex-1 flex">
+                    <CompareChart
+                      filter={filter}
+                      benchmarks={filteredBenchmarks}
+                    />
+                  </div>
+                </TabsContent>
+              )}
+              {selectedTab == "table" && (
+                <TabsContent value="table" className="flex-1 flex">
+                  <div className="flex-1 flex flex-row overflow-hidden">
+                    <BenchmarkTable
+                      benchmarks={filteredBenchmarks}
+                      filters={filter}
+                    />
+                  </div>
+                </TabsContent>
+              )}
             </Tabs>
           </div>
         </div>
-      </div>
-      <div className="text-center p-4 text-xs">
-        {" "}
-        Created By{" "}
-        <a href="https://github.com/yogeshpaliyal" target="_blank">
-          Yogesh Paliyal
-        </a>{" "}
       </div>
     </div>
   );

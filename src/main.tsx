@@ -1,22 +1,14 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
-import { ThemeProvider } from './components/theme-provider.tsx'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-
-const router = createBrowserRouter([
-  {
-    path: "*",
-    element: <App />,
-  },
-]);
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import { ThemeProvider } from "./components/theme-provider.tsx";
+import DataComponent from "./mainComponent.tsx";
 
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <ThemeProvider defaultTheme='light'>
-    <RouterProvider router={router} />
+    <ThemeProvider defaultTheme="light">
+      <DataComponent />
     </ThemeProvider>
-  </React.StrictMode>,
-)
+  </React.StrictMode>
+);
