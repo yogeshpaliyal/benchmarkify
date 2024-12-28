@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { Shell } from "./ui/shell.tsx";
 import {
   BrowserRouter,
-  createBrowserRouter,
-  RouterProvider,
   Routes,
   Route,
 } from "react-router-dom";
@@ -21,13 +19,15 @@ export default function DataComponent() {
   const [rawInput, setRawInput] = useState<string | undefined>();
 
   return (
-    <Shell>
+    // <Shell>
       <BrowserRouter basename="benchmarkify">
         <Routes>
-          <Route path="/" index element={<Page setRawInput={setRawInput} />} />
-          <Route path="result" element={<App json={rawInput} />} />
+          <Route path="/" element={<Shell />}>
+            <Route index element={<Page setRawInput={setRawInput} />} />
+            <Route path="/result" element={<App json={rawInput} />} />
+          </Route>
         </Routes>
       </BrowserRouter>
-    </Shell>
+    // </Shell>
   );
 }
