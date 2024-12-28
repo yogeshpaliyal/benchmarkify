@@ -117,27 +117,6 @@ function App({ json, resetJson }: { json: string | undefined, resetJson: () => v
     return isValidContext && isValidBenchmarks;
   };
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const content = e.target?.result as string;
-        try {
-          const json = JSON.parse(content);
-          if (validateJson(json)) {
-            setRawInput(content);
-          } else {
-            alert("Invalid JSON structure");
-          }
-        } catch (error) {
-          alert("Invalid JSON file");
-        }
-      };
-      reader.readAsText(file);
-    }
-  };
-
   return (
     <div className="flex flex-col h-dvh">
       <div className="md:flex flex-row flex-1 w-full">
@@ -206,13 +185,6 @@ function App({ json, resetJson }: { json: string | undefined, resetJson: () => v
           >
             Upload JSON File
           </Button>
-          <input
-            id="fileInput"
-            type="file"
-            accept=".json"
-            onChange={handleFileUpload}
-            className="hidden"
-          />
           <Textarea
             className="flex-1"
             value={rawInput}
