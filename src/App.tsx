@@ -118,7 +118,7 @@ function App({ json, resetJson }: { json: string | undefined, resetJson: () => v
   };
 
   return (
-    <div className="flex flex-col h-dvh">
+    <div className="flex flex-col">
       <div className="md:flex flex-row flex-1 w-full">
         <div className="flex flex-1 flex-col p-4">
           <div className="w-full flex flex-row gap-2 pb-4 max-md:flex-col">
@@ -149,7 +149,7 @@ function App({ json, resetJson }: { json: string | undefined, resetJson: () => v
                 className="max-md:flex-1"
                 variant={"outline"}
                 onClick={() => {
-                  let value = window.prompt("Save Baseline profile", "");
+                  let value = window.prompt("Save macrobenchmark profile", "");
                   if (value) {
                     const localBenchMarksStr =
                       localStorage.getItem("benchmarks");

@@ -70,7 +70,7 @@ export function CompareChart({
       <CardHeader>
         <CardTitle>{filter?.metrics}</CardTitle>
       </CardHeader>
-      <CardContent className="flex-1 flex">
+      <CardContent className="flex-1 flex-row">
         <ChartContainer className="flex-1" config={chartConfig}>
           <LineChart
             accessibilityLayer
