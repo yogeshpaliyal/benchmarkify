@@ -4,6 +4,7 @@ import {
   BrowserRouter,
   Routes,
   Route,
+  HashRouter,
 } from "react-router-dom";
 import Page from "./page.tsx";
 import App from "./App.tsx";
@@ -20,14 +21,14 @@ export default function DataComponent() {
 
   return (
     // <Shell>
-      <BrowserRouter basename="benchmarkify">
+      <HashRouter>
         <Routes>
           <Route path="/" element={<Shell />}>
             <Route index element={<Page setRawInput={setRawInput} />} />
             <Route path="/result" element={<App json={rawInput} />} />
           </Route>
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     // </Shell>
   );
 }
