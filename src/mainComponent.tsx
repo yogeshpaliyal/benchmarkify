@@ -21,7 +21,7 @@ export default function DataComponent() {
 
   return (
     // <Shell>
-      <HashRouter>
+      <HashRouter basename="benchmarkify">
         <Routes>
           <Route path="/" element={<Shell />}>
             <Route index element={<Page setRawInput={setRawInput} />} />
