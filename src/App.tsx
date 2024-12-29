@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import { CompareChart } from "./CompareChart";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,39 +18,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useSearchParams } from "react-router-dom";
 import { Compare } from "./ui/Compare";
 
-function App({ json, resetJson }: { json: string | undefined, resetJson: () => void }) {
+function App({ json, resetJson, filters }: { json: string | undefined, resetJson: () => void, filters: Filters | undefined }) {
   const [benchmarks, setBenchmarks] = useState<Benchmark[] | undefined>([]);
 
   const [rawInput, setRawInput] = useState<string | undefined>(json);
-  const [filter, setFilter] = useState<Filters | undefined>();
+  const [filter, setFilter] = useState<Filters | undefined>(filters);
   const [selectedTab, setSelectedTab] = useState<string | undefined>("charts");
-  const [searchParams] = useSearchParams();
-
-  const benchmarkFromRequest = searchParams.get("benchmarks");
-  const filtersQueryP = searchParams.get("filters");
-
-  useEffect(() => {
-    if (benchmarkFromRequest) {
-      try {
-        setRawInput(JSON.stringify(JSON.parse(benchmarkFromRequest), null, 2));
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  }, [benchmarkFromRequest]);
-
-  useEffect(() => {
-    if (filtersQueryP) {
-      try {
-        setFilter(JSON.parse(filtersQueryP));
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  }, [filtersQueryP]);
 
   const [localBenchmarks, setLocalBenchmarks] = useState<
     Record<string, string | undefined> | undefined
