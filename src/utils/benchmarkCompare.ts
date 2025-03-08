@@ -7,7 +7,10 @@ export function calculateAndPrintMetrics(
   dataBefore: number[],
   dataAfter: number[]
 ): BenchmarkResult {
-  return calculateAndPrintMetrics2(new Series(dataBefore), new Series(dataAfter));
+  return calculateAndPrintMetrics2(
+    new Series(dataBefore),
+    new Series(dataAfter)
+  );
 }
 
 export interface BenchmarkResult {
@@ -186,7 +189,7 @@ function verifyMinimumIterations(iterations: number): void {
     console.error(
       `Error: At least ${MIN_BENCHMARK_ITERATIONS} iterations required for analysis.`
     );
-   //process.exit(1);
+    //process.exit(1);
   }
 }
 
@@ -213,22 +216,3 @@ function checkVarianceRatio(dataBefore: Series, dataAfter: Series): void {
     );
   }
 }
-
-calculateAndPrintMetrics(
-  [
-    375.568111, 371.241548, 364.458786, 372.486079, 381.321236, 366.848734,
-    347.598732, 375.480193, 364.341495, 382.999153, 353.182275, 365.394881,
-    363.757953, 394.771394, 381.096861, 353.233473, 371.192901, 358.261859,
-    359.93764, 385.337799, 379.285403, 353.940608, 375.151131, 357.244879,
-    367.437589, 372.609256, 372.760662, 366.749463, 395.197956, 365.453891,
-    364.551443, 374.037537, 376.290818, 375.944933, 381.675923,
-  ],
-  [
-    415.179364, 399.308737, 388.402747, 421.687385, 417.100302, 387.275038,
-    387.45957, 392.254102, 409.672801, 382.753007, 407.276082, 397.560613,
-    410.521291, 395.170561, 405.054884, 414.333999, 419.969781, 393.182644,
-    393.635561, 416.805875, 386.068528, 412.773843, 390.090455, 419.348323,
-    387.592903, 414.767072, 429.162283, 409.94353, 412.280145, 393.527643,
-    395.81655, 408.132541, 391.26983, 399.082331, 415.244677,
-  ]
-);
