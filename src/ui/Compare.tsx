@@ -39,36 +39,50 @@ import {
 import { twMerge } from "tailwind-merge";
 import { calculateAndPrintMetrics } from "@/utils/benchmarkCompare";
 
-export function SmartCompare({beforeBenchmark, afterComparision, metric}:{beforeBenchmark: Benchmark, afterComparision: Benchmark, metric: string}) {
-  
+export function SmartCompare({
+  beforeBenchmark,
+  afterComparision,
+  metric,
+}: {
+  beforeBenchmark: Benchmark;
+  afterComparision: Benchmark;
+  metric: string;
+}) {
   const superResult = calculateAndPrintMetrics(
     beforeBenchmark.metrics[metric].runs,
     afterComparision.metrics[metric].runs
   );
-  return (<Dialog>
-    <DialogTrigger><Button className="w-[100%]" variant={"secondary"}>Smart Compare Benchmarks</Button></DialogTrigger>
-    <DialogContent>
-      <DialogHeader>
-        <DialogTitle>Smart Compare Benchmarks</DialogTitle>
-        <DialogDescription>
-          Select the Base and Benchmark to compare and the metric.
-        </DialogDescription>
-      </DialogHeader>
-      <Table>
+  return (
+    <Dialog>
+      <DialogTrigger>
+        <Button className="w-[100%]" variant={"secondary"}>
+          Smart Compare Benchmarks
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Smart Compare Benchmarks</DialogTitle>
+          <DialogDescription>
+            Select the Base and Benchmark to compare and the metric.
+          </DialogDescription>
+        </DialogHeader>
+        <Table>
           <TableBody>
             {Object.keys(superResult).map((key) => {
               //@ts-ignore
               let result = superResult[key] as any;
-            return (
-              <TableRow>
-                <TableCell className="font-medium">{key}</TableCell>
-                <TableCell>{"" + result}</TableCell>
-              </TableRow>
-            ))}}
+              return (
+                <TableRow>
+                  <TableCell className="font-medium">{key}</TableCell>
+                  <TableCell>{"" + result}</TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
-    </DialogContent>
-  </Dialog>)
+      </DialogContent>
+    </Dialog>
+  );
 }
 
 export function Compare({
@@ -256,7 +270,6 @@ function Result({
   after: Benchmark;
   metric: string;
 }) {
-
   return (
     <div className="flex flex-col gap-4">
       <h2 className="w-full text-center text-xl">
@@ -284,9 +297,11 @@ function Result({
           after={after.metrics[metric].average}
         />
 
-        <SmartCompare beforeBenchmark={base} afterComparision={after} metric={metric
-        }/>
-        
+        <SmartCompare
+          beforeBenchmark={base}
+          afterComparision={after}
+          metric={metric}
+        />
       </div>
     </div>
   );
