@@ -2,8 +2,17 @@ import { Button } from "@/components/ui/button";
 import { Benchmark } from "@/types/benchmark";
 import React, { useMemo, useState } from "react";
 import { ArrowDown, CaretDown } from "@phosphor-icons/react";
-import { Check, ChevronsUpDown } from "lucide-react"
- 
+import { Check, ChevronsUpDown } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
 import { cn } from "@/lib/utils";
 import {
   Command,
@@ -12,12 +21,12 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command"
+} from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
 import {
   Dialog,
   DialogContent,
@@ -28,7 +37,53 @@ import {
 } from "@/components/ui/dialog";
 
 import { twMerge } from "tailwind-merge";
-import { FormLabel } from "@/components/ui/form";
+import { calculateAndPrintMetrics } from "@/utils/benchmarkCompare";
+
+export function SmartCompare({
+  beforeBenchmark,
+  afterComparision,
+  metric,
+}: {
+  beforeBenchmark: Benchmark;
+  afterComparision: Benchmark;
+  metric: string;
+}) {
+  const superResult = calculateAndPrintMetrics(
+    beforeBenchmark.metrics[metric].runs,
+    afterComparision.metrics[metric].runs
+  );
+  return (
+    <Dialog>
+      <DialogTrigger>
+        <Button className="w-[100%]" variant={"secondary"}>
+          Smart Compare Benchmarks
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Smart Compare Benchmarks</DialogTitle>
+          <DialogDescription>
+            Select the Base and Benchmark to compare and the metric.
+          </DialogDescription>
+        </DialogHeader>
+        <Table>
+          <TableBody>
+            {Object.keys(superResult).map((key) => {
+              //@ts-ignore
+              let result = superResult[key] as any;
+              return (
+                <TableRow>
+                  <TableCell className="font-medium">{key}</TableCell>
+                  <TableCell>{"" + result}</TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 export function Compare({
   benchmarks,
@@ -42,7 +97,7 @@ export function Compare({
   const [selectedAfterBenchmarks, setSelectedAfterBenchmarks] = useState<
     Benchmark | undefined
   >();
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = React.useState(false);
 
   const metrics: string[] = useMemo(() => {
     const metrics = new Set<string>();
@@ -91,44 +146,46 @@ export function Compare({
 
         <div className="w-full flex flex-col">
           {!!selectedMetric ? <h6>Metric</h6> : ""}
-                <Popover open={open} onOpenChange={setOpen} >
-          <PopoverTrigger asChild>
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
               <Button variant="outline">
                 {selectedMetric ?? "Select Metric"}
-                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />             
-                 </Button>
-            </PopoverTrigger >
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
 
             <PopoverContent className="w-full">
-
-<Command>
-  <CommandInput placeholder="Search framework..." />
-  <CommandList>
-    <CommandEmpty>No framework found.</CommandEmpty>
-    <CommandGroup>
-    {metrics?.map((metric) => {
-                  return (
-                    <CommandItem key={metric} value={metric} onSelect={(currentValue) => {setSelectedMetric(currentValue);
-setOpen(false);}}>
-                     <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      selectedMetric === metric ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                     {metric}
-                    </CommandItem>
-                  );
-                })}
-    </CommandGroup>
-  </CommandList>
-</Command>
-
-
-
-</PopoverContent>
-
-
+              <Command>
+                <CommandInput placeholder="Search framework..." />
+                <CommandList>
+                  <CommandEmpty>No framework found.</CommandEmpty>
+                  <CommandGroup>
+                    {metrics?.map((metric) => {
+                      return (
+                        <CommandItem
+                          key={metric}
+                          value={metric}
+                          onSelect={(currentValue) => {
+                            setSelectedMetric(currentValue);
+                            setOpen(false);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              selectedMetric === metric
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          {metric}
+                        </CommandItem>
+                      );
+                    })}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
           </Popover>
         </div>
 
@@ -157,52 +214,47 @@ function BenchmarkSelector({
   selectedBenchmark: Benchmark | undefined;
   label: string;
 }) {
-  const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState("")
- 
+  const [open, setOpen] = React.useState(false);
+  const [value, setValue] = React.useState("");
+
   return (
     <div className="w-full flex flex-col">
       {!!selectedBenchmark ? <h6>{label}</h6> : ""}
-      <Popover open={open} onOpenChange={setOpen} >
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button variant="outline"  role="combobox"
-          aria-expanded={open}>
+          <Button variant="outline" role="combobox" aria-expanded={open}>
             {selectedBenchmark?.name ?? "Select " + label}
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-full">
-
-        <Command>
-          <CommandInput placeholder="Search framework..." />
-          <CommandList>
-            <CommandEmpty>No framework found.</CommandEmpty>
-            <CommandGroup>
-              {benchmarks?.map((benchmark) => (
-                <CommandItem
-                  key={benchmark.name}
-                  value={benchmark.name}
-                  onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue)
-                    setSelectedBenchmark(benchmark)
-                    setOpen(false)
-                  }}
-                >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      value === benchmark.name ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  {benchmark.name}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-
-
-        
+          <Command>
+            <CommandInput placeholder="Search framework..." />
+            <CommandList>
+              <CommandEmpty>No framework found.</CommandEmpty>
+              <CommandGroup>
+                {benchmarks?.map((benchmark) => (
+                  <CommandItem
+                    key={benchmark.name}
+                    value={benchmark.name}
+                    onSelect={(currentValue) => {
+                      setValue(currentValue === value ? "" : currentValue);
+                      setSelectedBenchmark(benchmark);
+                      setOpen(false);
+                    }}
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        value === benchmark.name ? "opacity-100" : "opacity-0"
+                      )}
+                    />
+                    {benchmark.name}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
         </PopoverContent>
       </Popover>
     </div>
@@ -243,6 +295,12 @@ function Result({
           name={"Average"}
           before={base.metrics[metric].average}
           after={after.metrics[metric].average}
+        />
+
+        <SmartCompare
+          beforeBenchmark={base}
+          afterComparision={after}
+          metric={metric}
         />
       </div>
     </div>
