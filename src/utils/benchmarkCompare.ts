@@ -1,4 +1,5 @@
 import * as math from "mathjs";
+//@ts-ignore
 import { Series } from "pandas-js";
 
 const MIN_BENCHMARK_ITERATIONS = 30;
