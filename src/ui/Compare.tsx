@@ -56,12 +56,15 @@ export function SmartCompare({beforeBenchmark, afterComparision, metric}:{before
       </DialogHeader>
       <Table>
           <TableBody>
-            {Object.keys(superResult).map((key) => (
+            {Object.keys(superResult).map((key) => {
+              //@ts-ignore
+              let result = superResult[key] as any;
+            return (
               <TableRow>
                 <TableCell className="font-medium">{key}</TableCell>
-                <TableCell>{"" + superResult[key]}</TableCell>
+                <TableCell>{"" + result}</TableCell>
               </TableRow>
-            ))}
+            ))}}
           </TableBody>
         </Table>
     </DialogContent>
