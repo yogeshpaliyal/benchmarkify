@@ -14,27 +14,46 @@ export function calculateAndPrintMetrics(
   );
 }
 
+export interface ErrorObj {
+  message: string;
+  type: "warning" | "error";
+}
+
 export interface BenchmarkResult {
-  varianceRatio: number;
-  confidenceLevel: number;
-  alphaLevel: number;
-  zScore: any;
-  pooledEstimateOfCommonStd: number | math.Complex;
-  standardError: any;
-  marginOfError: number;
-  confidenceIntervalRange: number;
-  confidenceIntervalOfMeanDifference: number[];
-  confidenceIntervalOfMeanPercentChange: number[];
+    compare: {
+        label: string,
+        before: any,
+        after: any,
+        shouldCompare?: boolean
+    }[];
+  result: Record<string, any>;
+  errors: ErrorObj[];
+}
+
+function pushIfDefined<T>(array: T[], value: T | undefined): void {
+  if (value !== undefined) {
+    array.push(value);
+  }
 }
 
 function calculateAndPrintMetrics2(
   dataBefore: Series,
   dataAfter: Series
 ): BenchmarkResult {
+  const errors: ErrorObj[] = [];
   const iterationCountBefore = dataBefore.length;
   const iterationCountAfter = dataAfter.length;
-  verifyMinimumIterations(iterationCountBefore);
-  verifyMinimumIterations(iterationCountAfter);
+  let beforeError = verifyMinimumIterations(iterationCountBefore, "before");
+  let afterError = verifyMinimumIterations(iterationCountAfter, "after");
+  if(beforeError && afterError) {
+    pushIfDefined(errors, {
+        message: `At least ${MIN_BENCHMARK_ITERATIONS} iterations for "before" and "after" required for analysis.`,
+        type:  'error'
+    });
+  } else {
+    pushIfDefined(errors, beforeError);
+    pushIfDefined(errors, afterError);
+  }
 
   const meanBefore = math.round(dataBefore.mean(), 3);
   const meanAfter = math.round(dataAfter.mean(), 3);
@@ -50,11 +69,11 @@ function calculateAndPrintMetrics2(
 
   const coefficientOfVariationBefore = math.round(stdBefore / meanBefore, 3);
   const coefficientOfVariationAfter = math.round(stdAfter / meanAfter, 3);
-  checkCoefficientOfVariation(dataBefore, "before");
-  checkCoefficientOfVariation(dataAfter, "after");
+  pushIfDefined(errors, checkCoefficientOfVariation(dataBefore, "before"));
+  pushIfDefined(errors, checkCoefficientOfVariation(dataAfter, "after"));
 
   const varianceRatio = varianceAfter / varianceBefore;
-  checkVarianceRatio(dataBefore, dataAfter);
+  pushIfDefined(errors, checkVarianceRatio(dataBefore, dataAfter));
 
   const confidenceLevel = 0.95;
   const alphaLevel = math.round((1 - confidenceLevel) / 2, 3);
@@ -63,14 +82,6 @@ function calculateAndPrintMetrics2(
     ((iterationCountAfter - 1) * varianceAfter +
       (iterationCountBefore - 1) * varianceBefore) /
     (iterationCountAfter + iterationCountBefore - 2);
-  console.log(
-    "pooledVariance",
-    iterationCountAfter,
-    varianceAfter,
-    iterationCountBefore,
-    varianceBefore,
-    pooledVariance
-  );
   const pooledEstimateOfCommonStd = math.round(math.sqrt(pooledVariance), 3);
   const standardError = math.round(
     math.sqrt(
@@ -142,16 +153,50 @@ function calculateAndPrintMetrics2(
   );
 
   return {
-    varianceRatio,
-    confidenceLevel,
-    alphaLevel,
-    zScore,
-    pooledEstimateOfCommonStd,
-    standardError,
-    marginOfError,
-    confidenceIntervalRange,
-    confidenceIntervalOfMeanDifference,
-    confidenceIntervalOfMeanPercentChange,
+    compare: [
+        {
+            label: "Mean",
+            before: meanBefore,
+            after: meanAfter,
+            shouldCompare: true
+        },
+        {
+            label: "Standard Deviation",
+            before: stdBefore,
+            after: stdAfter
+        },
+        {
+            label: "Median",
+            before: medianBefore,
+            after: medianAfter
+        },
+        {
+            label: "Variance",
+            before: varianceBefore,
+            after: varianceAfter
+        },
+        {
+            label: "Coefficient of Variation",
+            before: coefficientOfVariationBefore,
+            after: coefficientOfVariationAfter
+        }
+    ],
+    result: {
+        "Mean Difference": math.round(meanAfter - meanBefore, 2),
+      "Variance Ratio": math.round(varianceRatio, 2),
+      "Confidence Level": confidenceLevel,
+      "Alpha Level": alphaLevel,
+      "Z Score": zScore,
+      "Pooled Estimate of Common Standard Deviation": pooledEstimateOfCommonStd,
+      "Standard Error": standardError,
+      "Error Margin": marginOfError,
+      "Confidence Interval Range": confidenceIntervalRange,
+      "Confidence Interval of Mean Difference":
+      confidenceIntervalOfMeanDifference,
+      "Confidence Interval of Mean Percent Change":
+      confidenceIntervalOfMeanPercentChange
+    },
+    errors: errors,
   };
 }
 
@@ -185,16 +230,23 @@ function printTable(header: string[], ...data: any[]): void {
   });
 }
 
-function verifyMinimumIterations(iterations: number): void {
+function verifyMinimumIterations(iterations: number, type: string): ErrorObj | undefined {
   if (iterations < MIN_BENCHMARK_ITERATIONS) {
     console.error(
       `Error: At least ${MIN_BENCHMARK_ITERATIONS} iterations required for analysis.`
     );
+    return {
+      message: `At least ${MIN_BENCHMARK_ITERATIONS} iterations for "${type}" required for analysis.`,
+      type: "error",
+    };
     //process.exit(1);
   }
 }
 
-function checkCoefficientOfVariation(data: Series, label: string): void {
+function checkCoefficientOfVariation(
+  data: Series,
+  label: string
+): ErrorObj | undefined {
   const cv = data.std() / data.mean();
   if (cv > 0.06) {
     console.warn(
@@ -202,10 +254,19 @@ function checkCoefficientOfVariation(data: Series, label: string): void {
         cv * 100
       ).toFixed(3)}%`
     );
+    return {
+      message: `Coefficient of variation for "${label}" is higher than 6%: ${(
+        cv * 100
+      ).toFixed(3)}%`,
+      type: "warning",
+    };
   }
 }
 
-function checkVarianceRatio(dataBefore: Series, dataAfter: Series): void {
+function checkVarianceRatio(
+  dataBefore: Series,
+  dataAfter: Series
+): ErrorObj | undefined {
   const cvBefore = dataBefore.std() / dataBefore.mean();
   const cvAfter = dataAfter.std() / dataAfter.mean();
   if (cvBefore / cvAfter < 0.5 || cvBefore / cvAfter > 2) {
@@ -215,5 +276,12 @@ function checkVarianceRatio(dataBefore: Series, dataAfter: Series): void {
         100
       ).toFixed(3)}%`
     );
+    return {
+      message: `Variance ratio is more than double: ${(
+        (cvBefore / cvAfter) *
+        100
+      ).toFixed(3)}%`,
+      type: "warning",
+    };
   }
 }

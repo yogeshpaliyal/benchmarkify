@@ -1,17 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Benchmark } from "@/types/benchmark";
 import React, { useMemo, useState } from "react";
-import { ArrowDown, CaretDown } from "@phosphor-icons/react";
 import { Check, ChevronsUpDown } from "lucide-react";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 
 import { cn } from "@/lib/utils";
 import {
@@ -37,34 +28,26 @@ import {
 } from "@/components/ui/dialog";
 
 import { twMerge } from "tailwind-merge";
-import { calculateAndPrintMetrics } from "@/utils/benchmarkCompare";
+import { calculateAndPrintMetrics, ErrorObj } from "@/utils/benchmarkCompare";
 
 export function SmartCompare({
-  beforeBenchmark,
-  afterComparision,
-  metric,
+  result: superResult,
 }: {
-  beforeBenchmark: Benchmark;
-  afterComparision: Benchmark;
-  metric: string;
+  result: Record<string, any>;
 }) {
-  const superResult = calculateAndPrintMetrics(
-    beforeBenchmark.metrics[metric].runs,
-    afterComparision.metrics[metric].runs
-  );
   return (
     <Dialog>
       <DialogTrigger>
         <Button className="w-[100%]" variant={"secondary"}>
-          Smart Compare Benchmarks
+          More insights
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent
+        className={"lg:max-w-screen-lg overflow-y-scroll max-h-screen"}
+      >
         <DialogHeader>
-          <DialogTitle>Smart Compare Benchmarks</DialogTitle>
-          <DialogDescription>
-            Select the Base and Benchmark to compare and the metric.
-          </DialogDescription>
+          <DialogTitle>More insights</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <Table>
           <TableBody>
@@ -83,6 +66,44 @@ export function SmartCompare({
       </DialogContent>
     </Dialog>
   );
+}
+
+function RenderErrors({ errors }: { errors: ErrorObj[] }) {
+  if (errors.length <= 0) {
+    return (
+      <div
+        className="p-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+        role="alert"
+      >
+        Benchmarks are comparable
+      </div>
+    );
+  }
+
+  return errors.map(({ message, type }) => {
+    switch (type) {
+      case "error":
+        return (
+          <div
+            className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+            role="alert"
+          >
+            {message}{" "}
+          </div>
+        );
+        break;
+      case "warning":
+        return (
+          <div
+            className="p-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300"
+            role="alert"
+          >
+            {message}
+          </div>
+        );
+        break;
+    }
+  });
 }
 
 export function Compare({
@@ -122,7 +143,9 @@ export function Compare({
       <DialogTrigger>
         <Button className="w-[100%]">Compare Benchmarks</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent
+        className={"lg:max-w-screen-lg overflow-y-scroll max-h-screen"}
+      >
         <DialogHeader>
           <DialogTitle>Compare Benchmarks</DialogTitle>
           <DialogDescription>
@@ -270,38 +293,44 @@ function Result({
   after: Benchmark;
   metric: string;
 }) {
+  const {
+    result: superResult,
+    errors,
+    compare,
+  } = calculateAndPrintMetrics(
+    base.metrics[metric].runs,
+    after.metrics[metric].runs
+  );
+
   return (
     <div className="flex flex-col gap-4">
       <h2 className="w-full text-center text-xl">
         <b>Comparision</b>
       </h2>
       <div className="flex gap-4 flex-col">
-        <ResultLine
-          name={"Minimum"}
-          before={base.metrics[metric].minimum}
-          after={after.metrics[metric].minimum}
-        />
-        <ResultLine
-          name={"Median"}
-          before={base.metrics[metric].median}
-          after={after.metrics[metric].median}
-        />
-        <ResultLine
-          name={"Maximum"}
-          before={base.metrics[metric].maximum}
-          after={after.metrics[metric].maximum}
-        />
-        <ResultLine
-          name={"Average"}
-          before={base.metrics[metric].average}
-          after={after.metrics[metric].average}
-        />
+        <RenderErrors errors={errors} />
+        {compare.map((comp) => (
+          <ResultLine
+            shouldCompare={!!comp.shouldCompare}
+            name={comp.label}
+            before={comp.before}
+            after={comp.after}
+          />
+        ))}
 
-        <SmartCompare
-          beforeBenchmark={base}
-          afterComparision={after}
-          metric={metric}
-        />
+        <SmartCompare result={superResult} />
+        <Button
+          className="w-[100%] py-0 h-0"
+          variant={"link"}
+          onClick={() =>
+            window.open(
+              "https://github.com/measure-sh/measure/blob/main/android/benchmarks/README.md",
+              "_blank"
+            )
+          }
+        >
+          Calculated using: measure benchmark script
+        </Button>
       </div>
     </div>
   );
@@ -311,11 +340,25 @@ function ResultLine({
   name,
   before,
   after,
+  shouldCompare = false,
 }: {
   name: string;
   before: number;
   after: number;
+  shouldCompare: boolean;
 }) {
+  if (!shouldCompare) {
+    return (
+      <div className="gap-2 flex flex-row flex-wrap">
+        {"-"} <b>{name}</b>: Before: <b> {before} </b> : After:
+        <b> {after} </b>
+        <div
+          className={twMerge("text-white", "inline", "px-1", "rounded")}
+        ></div>
+      </div>
+    );
+  }
+
   const diff = after - before;
   const diffPercentage = Math.abs((diff / ((after + before) / 2)) * 100);
   let conditionalStyling = "";
