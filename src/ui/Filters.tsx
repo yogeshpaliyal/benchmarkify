@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Filters } from "@/types/filters";
+import { TriangleAlert } from "lucide-react";
 
 type Checked = DropdownMenuCheckboxItemProps["checked"];
 
@@ -47,11 +48,20 @@ export function FiltersSelector({
     });
   }, [benchmarks]);
 
+  let selectedBenchmarks = 0
+  benchmarks?.forEach((benchmark: any) => { 
+    if(filters?.benchmarkNames.includes(benchmark.name)) {
+      selectedBenchmarks++
+    }
+  })
+
+  
+
   return (
     <div className="flex gap-[8px] max-sm:flex-col max-lg:flex-col pb-4 ">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline">Select Benchmarks</Button>
+          <Button variant="outline"> {!selectedBenchmarks && <TriangleAlert color="#f29b21"/>} Select Benchmarks</Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">
           <DropdownMenuLabel>Benchmarks</DropdownMenuLabel>
